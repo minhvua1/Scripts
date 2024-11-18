@@ -1,0 +1,88 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Tạo biến toàn cục _G để điều khiển trạng thái hiển thị
+_G.ShowPlayerInfo = true  -- Mặc định là bật hiển thị tên, máu, khoảng cách
+
+-- Hàm tạo thanh ngang hiển thị
+local function CreateDisplay(player)
+    if player == LocalPlayer then return end -- Không hiển thị cho chính mình
+
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local head = character:WaitForChild("Head")
+
+    -- Tạo BillboardGui
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "PlayerInfo"
+    billboard.Adornee = head
+    billboard.Size = UDim2.new(0, 150, 0, 40) -- Kích thước thanh ngang nhỏ hơn
+    billboard.StudsOffset = Vector3.new(0, 2, 0) -- Vị trí hiển thị
+    billboard.AlwaysOnTop = true -- Luôn ở phía trên
+    billboard.Parent = head
+
+    -- Tạo Frame cho thanh ngang
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0) -- Chiều rộng toàn bộ BillboardGui
+    frame.BackgroundTransparency = 0.6 -- Độ trong suốt của thanh ngang (mờ hơn)
+    frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40) -- Nền đen nhạt hơn
+    frame.Parent = billboard
+
+    -- Tạo TextLabel cho tên
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(0.33, 0, 1, 0)  -- 33% chiều rộng cho tên
+    nameLabel.Position = UDim2.new(0, 0, 0, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.TextScaled = true
+    nameLabel.Font = Enum.Font.SourceSansBold
+    nameLabel.TextColor3 = Color3.new(1, 1, 1) -- Màu trắng
+    nameLabel.Text = player.Name
+    nameLabel.Parent = frame
+
+    -- Tạo TextLabel cho máu
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Size = UDim2.new(0.33, 0, 1, 0)  -- 33% chiều rộng cho máu
+    healthLabel.Position = UDim2.new(0.33, 0, 0, 0)
+    healthLabel.BackgroundTransparency = 1
+    healthLabel.TextScaled = true
+    healthLabel.Font = Enum.Font.SourceSansBold
+    healthLabel.TextColor3 = Color3.new(1, 1, 1) -- Màu trắng
+    healthLabel.Parent = frame
+
+    -- Tạo TextLabel cho khoảng cách
+    local distanceLabel = Instance.new("TextLabel")
+    distanceLabel.Size = UDim2.new(0.34, 0, 1, 0)  -- 34% chiều rộng cho khoảng cách
+    distanceLabel.Position = UDim2.new(0.66, 0, 0, 0)
+    distanceLabel.BackgroundTransparency = 1
+    distanceLabel.TextScaled = true
+    distanceLabel.Font = Enum.Font.SourceSansBold
+    distanceLabel.TextColor3 = Color3.new(1, 1, 1) -- Màu trắng
+    distanceLabel.Parent = frame
+
+    -- Cập nhật thông tin liên tục
+    RunService.RenderStepped:Connect(function()
+        if _G.ShowPlayerInfo and character and character.PrimaryPart and LocalPlayer.Character and LocalPlayer.Character.PrimaryPart then
+            local distance = (character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+            healthLabel.Text = string.format("Máu: %d", humanoid.Health)
+            distanceLabel.Text = string.format("Khoảng cách: %.1f", distance)
+        else
+            -- Ẩn thông tin khi _G.ShowPlayerInfo là false
+            billboard.Enabled = false  -- Ẩn toàn bộ BillboardGui (bao gồm thanh ngang và các TextLabel)
+        end
+    end)
+end
+
+-- Lắng nghe sự kiện thêm người chơi mới
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        CreateDisplay(player)
+    end)
+end)
+
+-- Tạo hiển thị cho người chơi hiện tại
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        CreateDisplay(player)
+    end
+end
