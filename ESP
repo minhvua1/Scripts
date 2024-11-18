@@ -1,0 +1,38 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- Tạo biến toàn cục để điều khiển trạng thái ESP
+_G.ESPEnabled = true -- Mặc định bật ESP
+
+-- Hàm tạo ESP Box
+local function CreateESP(player)
+    if player == Players.LocalPlayer then return end -- Không tạo ESP cho chính người chơi
+
+    local character = player.Character or player.CharacterAdded:Wait()
+    local highlight = Instance.new("Highlight")
+    
+    highlight.Parent = character -- Gắn vào nhân vật
+    highlight.FillTransparency = 0.8 -- Độ trong suốt của phần lấp đầy
+    highlight.OutlineTransparency = 0 -- Hiển thị viền
+    highlight.FillColor = Color3.new(0.6, 0.8, 1) -- Màu lấp đầy (Xanh dương nhạt)
+    highlight.OutlineColor = Color3.new(1, 1, 1) -- Màu viền (Trắng)
+
+    -- Kết nối ESP với biến trạng thái toàn cục
+    RunService.Heartbeat:Connect(function()
+        highlight.Enabled = _G.ESPEnabled -- Bật/Tắt dựa trên _G.ESPEnabled
+    end)
+end
+
+-- Thêm ESP khi có người chơi mới
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        CreateESP(player)
+    end)
+end)
+
+-- Thêm ESP cho người chơi hiện tại
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= Players.LocalPlayer then
+        CreateESP(player)
+    end
+end
