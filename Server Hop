@@ -4,15 +4,15 @@ local Players = game:GetService("Players")
 
 local PlaceId = game.PlaceId
 local JobId = game.JobId
-local serverHopScriptUrl = "https://raw.githubusercontent.com/minhvua1/Capy-Hub-V2/refs/heads/main/Test"
+
+-- Kiểm tra API request mà executor hỗ trợ
+local requestFunction = (syn and syn.request) or (http and http.request) or (httprequest) or (request)
+if not requestFunction then
+    warn("Serverhop: Your executor does not support HTTP requests.")
+    return
+end
 
 local function serverHop()
-    local requestFunction = (syn and syn.request) or (http and http.request) or (httprequest) or (request)
-    if not requestFunction then
-        warn("Serverhop: Your executor does not support HTTP requests.")
-        return
-    end
-
     local servers = {}
     local response = requestFunction({
         Url = string.format(
@@ -42,11 +42,6 @@ local function serverHop()
         warn("Serverhop: Couldn't find a suitable server.")
     end
 end
-
--- Chạy script sau khi server hop thành công
-game:GetService("TeleportService").TeleportInitFailed:Connect(function()
-    loadstring(game:HttpGet(serverHopScriptUrl))()
-end)
 
 -- Gọi hàm để server hop
 serverHop()
