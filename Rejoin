@@ -3,17 +3,24 @@ local Players = game:GetService("Players")
 
 local PlaceId = game.PlaceId
 local JobId = game.JobId
+local rejoinScriptUrl = "https://raw.githubusercontent.com/minhvua1/Capy-Hub-V2/refs/heads/main/Test"
 
 local function rejoin()
     if #Players:GetPlayers() <= 1 then
-        
+        -- Nếu bạn đang ở một mình trong server
         Players.LocalPlayer:Kick("\nRejoining...")
         wait(1)
         TeleportService:Teleport(PlaceId, Players.LocalPlayer)
     else
-      
+        -- Nếu có người khác trong server
         TeleportService:TeleportToPlaceInstance(PlaceId, JobId, Players.LocalPlayer)
     end
 end
 
+-- Chạy script sau khi rejoin
+game:GetService("TeleportService").TeleportInitFailed:Connect(function()
+    loadstring(game:HttpGet(rejoinScriptUrl))()
+end)
+
+-- Gọi hàm để thực hiện rejoin
 rejoin()
