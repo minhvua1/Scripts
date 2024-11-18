@@ -1,0 +1,45 @@
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+
+local PlaceId = game.PlaceId
+local JobId = game.JobId
+
+local requestFunction = (syn and syn.request) or (http and http.request) or (httprequest) or (request)
+if not requestFunction then
+    warn("Serverhop: Your executor does not support HTTP requests.")
+    return
+end
+
+local function serverHop()
+    local servers = {}
+    local response = requestFunction({
+        Url = string.format(
+            "https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true",
+            PlaceId
+        ),
+        Method = "GET"
+    })
+
+    if response and response.StatusCode == 200 then
+        local body = HttpService:JSONDecode(response.Body)
+        if body and body.data then
+            for _, server in ipairs(body.data) do
+                if type(server) == "table" and tonumber(server.playing) and tonumber(server.maxPlayers) then
+                    if server.playing < server.maxPlayers and server.id ~= JobId then
+                        table.insert(servers, server.id)
+                    end
+                end
+            end
+        end
+    end
+
+    if #servers > 0 then
+        local targetServer = servers[math.random(1, #servers)]
+        TeleportService:TeleportToPlaceInstance(PlaceId, targetServer, Players.LocalPlayer)
+    else
+        warn("Serverhop: Couldn't find a suitable server.")
+    end
+end
+
+serverHop()
