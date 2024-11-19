@@ -75,6 +75,7 @@ TextBox.TextSize = 14
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
 TextBox.TextWrapped = true
+TextBox.ClearTextOnFocus = false  -- Keep the text when clicking the textbox
 
 -- Line Count Frame
 LineCountFrame.Name = "LineCountFrame"
@@ -131,7 +132,11 @@ CopyButton.TextSize = 14
 
 local function updateLineCount()
     local lines = string.split(TextBox.Text, "\n")
-    LineCountLabel.Text = tostring(#lines)
+    local lineNumbers = ""
+    for i = 1, #lines do
+        lineNumbers = lineNumbers .. i .. "\n"
+    end
+    LineCountLabel.Text = lineNumbers
 end
 
 -- Event Handlers
