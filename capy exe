@@ -1,0 +1,179 @@
+--[[
+
+        Gui2Lua™
+        10zOfficial
+        Version 1.0.0
+
+]]
+
+-- Instances
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Upper = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local Down = Instance.new("Frame")
+local TextBox = Instance.new("TextBox")
+local LineCountLabel = Instance.new("TextLabel") -- Label to show line count
+local ExecuteButton = Instance.new("TextButton")
+local ClearButton = Instance.new("TextButton")
+local CopyButton = Instance.new("TextButton")
+
+-- Properties
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.new(0.152941, 0.152941, 0.152941)
+MainFrame.BorderColor3 = Color3.new(0, 0, 0)
+MainFrame.BorderSizePixel = 0
+MainFrame.Position = UDim2.new(0.0467127673, 0, 0.149402395, 0)
+MainFrame.Size = UDim2.new(0, 712, 0, 327)
+
+Upper.Name = "Upper"
+Upper.Parent = MainFrame
+Upper.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+Upper.BorderColor3 = Color3.new(0, 0, 0)
+Upper.BorderSizePixel = 0
+Upper.Size = UDim2.new(0, 712, 0, 22)
+
+TextLabel.Parent = Upper
+TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+TextLabel.BorderColor3 = Color3.new(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(0, 62, 0, 22)
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.Text = "Capy"
+TextLabel.TextColor3 = Color3.new(0, 0, 0)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 20
+TextLabel.TextWrapped = true
+TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+Down.Name = "Down"
+Down.Parent = MainFrame
+Down.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+Down.BorderColor3 = Color3.new(0, 0, 0)
+Down.BorderSizePixel = 0
+Down.Position = UDim2.new(0, 0, 0.89296639, 0)
+Down.Size = UDim2.new(0, 712, 0, 35)
+
+TextBox.Parent = MainFrame
+TextBox.BackgroundColor3 = Color3.new(0.654902, 0.654902, 0.654902)
+TextBox.BorderColor3 = Color3.new(0, 0, 0)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0.0758426934, 0, 0.110091746, 0)
+TextBox.Size = UDim2.new(0, 645, 0, 238)
+TextBox.Font = Enum.Font.SourceSans
+TextBox.Text = "-- print(\"hello world\")"
+TextBox.TextColor3 = Color3.new(0, 0, 0)
+TextBox.TextSize = 14
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.TextYAlignment = Enum.TextYAlignment.Top
+
+-- Add Line Count Label
+LineCountLabel.Parent = MainFrame
+LineCountLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+LineCountLabel.BorderSizePixel = 0
+LineCountLabel.Position = UDim2.new(0.9, 0, 0.110091746, 0)
+LineCountLabel.Size = UDim2.new(0, 60, 0, 22)
+LineCountLabel.Font = Enum.Font.SourceSans
+LineCountLabel.TextColor3 = Color3.new(0, 0, 0)
+LineCountLabel.TextSize = 14
+LineCountLabel.TextXAlignment = Enum.TextXAlignment.Center
+LineCountLabel.TextYAlignment = Enum.TextYAlignment.Center
+LineCountLabel.Text = "1" -- Default line count
+
+-- Add Execute Button
+ExecuteButton.Parent = Down
+ExecuteButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+ExecuteButton.Position = UDim2.new(0.075, 0, 0.1, 0)
+ExecuteButton.Size = UDim2.new(0, 100, 0, 30)
+ExecuteButton.Font = Enum.Font.SourceSans
+ExecuteButton.Text = "Execute"
+ExecuteButton.TextColor3 = Color3.new(1, 1, 1)
+ExecuteButton.TextSize = 14
+
+-- Add Clear Button
+ClearButton.Parent = Down
+ClearButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+ClearButton.Position = UDim2.new(0.3, 0, 0.1, 0)
+ClearButton.Size = UDim2.new(0, 100, 0, 30)
+ClearButton.Font = Enum.Font.SourceSans
+ClearButton.Text = "Clear"
+ClearButton.TextColor3 = Color3.new(1, 1, 1)
+ClearButton.TextSize = 14
+
+-- Add Copy Button
+CopyButton.Parent = Down
+CopyButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+CopyButton.Position = UDim2.new(0.525, 0, 0.1, 0)
+CopyButton.Size = UDim2.new(0, 100, 0, 30)
+CopyButton.Font = Enum.Font.SourceSans
+CopyButton.Text = "Copy Script"
+CopyButton.TextColor3 = Color3.new(1, 1, 1)
+CopyButton.TextSize = 14
+
+-- Functions
+
+local function updateLineCount()
+    local lines = string.split(TextBox.Text, "\n")
+    LineCountLabel.Text = tostring(#lines)
+end
+
+-- Event Handlers
+
+TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+    updateLineCount()
+end)
+
+ExecuteButton.MouseButton1Click:Connect(function()
+    -- Here you can add functionality to execute the code in TextBox
+    local scriptToExecute = TextBox.Text
+    loadstring(scriptToExecute)()
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+    updateLineCount()
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(TextBox.Text) -- Copies the content of the TextBox
+end)
+
+-- Draggable logic
+local dragToggle = nil
+local dragStart = nil
+local dragPos = nil
+
+MainFrame.InputBegan:Connect(function(input, gameProcessedEvent)
+    if gameProcessedEvent then return end
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        dragPos = MainFrame.Position
+    end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+    if dragToggle then
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            local delta = input.Position - dragStart
+            MainFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+        end
+    end
+end)
+
+MainFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = false
+    end
+end)
+
+-- Initial line count update
+updateLineCount()
