@@ -54,7 +54,7 @@ TitleLabel.Font = Enum.Font.SourceSans
 TitleLabel.Text = "Capy"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.TextSize = 18
-TitleLabel.TextWrapped = false
+TitleLabel.TextWrapped = true
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 MinimizeButton.Parent = Upper
