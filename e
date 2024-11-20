@@ -124,7 +124,7 @@ ExecuteButton.TextSize = 14
 ClearButton.Parent = Down
 ClearButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 ClearButton.Size = UDim2.new(0, 85, 0, 30)
-ClearButton.Position = UDim2.new(0.28, 0, 0.5, -15)
+ClearButton.Position = UDim2.new(0.20, 0, 0.5, -15)
 ClearButton.Font = Enum.Font.SourceSans
 ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -133,7 +133,7 @@ ClearButton.TextSize = 14
 CopyButton.Parent = Down
 CopyButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 CopyButton.Size = UDim2.new(0, 85, 0, 30)
-CopyButton.Position = UDim2.new(0.51, 0, 0.5, -15)
+CopyButton.Position = UDim2.new(0.35, 0, 0.5, -15)
 CopyButton.Font = Enum.Font.SourceSans
 CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -224,4 +224,3 @@ CopyButton.MouseButton1Click:Connect(function()
         print("Clipboard not supported.")
     end
 end)
-
