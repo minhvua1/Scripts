@@ -204,3 +204,4 @@ local function enableDrag(frame)
 end
 
 enableDrag(MainFrame)
+
