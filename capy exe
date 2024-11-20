@@ -1,8 +1,8 @@
 --[[
 
-        GitHub-Style Script Editor
+        Script Editor (GitHub Style)
         By ChatGPT
-        Version 1.0.0
+        Version 1.1.0
 
 ]]
 
@@ -27,22 +27,20 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.new(0.152941, 0.152941, 0.152941)
-MainFrame.BorderColor3 = Color3.new(0, 0, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 712, 0, 400)
+MainFrame.Active = true
 
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-Upper.BorderColor3 = Color3.new(0, 0, 0)
+Upper.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
 Upper.BorderSizePixel = 0
 Upper.Size = UDim2.new(0, 712, 0, 22)
 
 TextLabel.Parent = Upper
 TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
-TextLabel.BorderColor3 = Color3.new(0, 0, 0)
 TextLabel.BorderSizePixel = 0
 TextLabel.Size = UDim2.new(0, 62, 0, 22)
 TextLabel.Font = Enum.Font.SourceSans
@@ -56,38 +54,35 @@ TextLabel.TextYAlignment = Enum.TextYAlignment.Top
 
 Down.Name = "Down"
 Down.Parent = MainFrame
-Down.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-Down.BorderColor3 = Color3.new(0, 0, 0)
-Down.BorderSizePixel = 0
+Down.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
 Down.Position = UDim2.new(0, 0, 0.9, 0)
 Down.Size = UDim2.new(0, 712, 0, 35)
 
 ScrollingFrame.Parent = MainFrame
-ScrollingFrame.BackgroundColor3 = Color3.new(0.654902, 0.654902, 0.654902)
-ScrollingFrame.BorderColor3 = Color3.new(0, 0, 0)
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+ScrollingFrame.BorderSizePixel = 0
 ScrollingFrame.Position = UDim2.new(0, 0, 0.055, 0)
-ScrollingFrame.Size = UDim2.new(0, 712, 0, 350)
+ScrollingFrame.Size = UDim2.new(0, 712, 0, 328)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollingFrame.ScrollBarThickness = 10
-ScrollingFrame.ScrollBarImageColor3 = Color3.new(0.4, 0.4, 0.4)
 
 LineNumbers.Name = "LineNumbers"
 LineNumbers.Parent = ScrollingFrame
-LineNumbers.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+LineNumbers.BackgroundColor3 = Color3.fromRGB(169, 169, 169)
 LineNumbers.BorderSizePixel = 0
 LineNumbers.Size = UDim2.new(0, 30, 1, 0)
 LineNumbers.Font = Enum.Font.SourceSans
-LineNumbers.Text = "1\n2\n3\n4\n5"
+LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.new(0, 0, 0)
 LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
 LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
-TextBox.BackgroundColor3 = Color3.new(1, 1, 1)
+TextBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
 TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0, 35, 0, 0)
-TextBox.Size = UDim2.new(1, -35, 1, 0)
+TextBox.Size = UDim2.new(1, -40, 1, 0)
 TextBox.Font = Enum.Font.SourceSans
 TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.new(0, 0, 0)
@@ -99,8 +94,7 @@ TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
 
 ExecuteButton.Parent = Down
-ExecuteButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-ExecuteButton.Position = UDim2.new(0.05, 0, 0.1, 0)
+ExecuteButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
 ExecuteButton.Size = UDim2.new(0, 100, 0, 30)
 ExecuteButton.Font = Enum.Font.SourceSans
 ExecuteButton.Text = "Execute"
@@ -108,8 +102,8 @@ ExecuteButton.TextColor3 = Color3.new(1, 1, 1)
 ExecuteButton.TextSize = 14
 
 ClearButton.Parent = Down
-ClearButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-ClearButton.Position = UDim2.new(0.3, 0, 0.1, 0)
+ClearButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+ClearButton.Position = UDim2.new(0.2, 0, 0, 0)
 ClearButton.Size = UDim2.new(0, 100, 0, 30)
 ClearButton.Font = Enum.Font.SourceSans
 ClearButton.Text = "Clear"
@@ -117,8 +111,8 @@ ClearButton.TextColor3 = Color3.new(1, 1, 1)
 ClearButton.TextSize = 14
 
 CopyButton.Parent = Down
-CopyButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-CopyButton.Position = UDim2.new(0.55, 0, 0.1, 0)
+CopyButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+CopyButton.Position = UDim2.new(0.4, 0, 0, 0)
 CopyButton.Size = UDim2.new(0, 100, 0, 30)
 CopyButton.Font = Enum.Font.SourceSans
 CopyButton.Text = "Copy"
@@ -129,12 +123,11 @@ CopyButton.TextSize = 14
 
 local function updateLineNumbers()
     local lines = string.split(TextBox.Text, "\n")
-    local lineText = ""
+    LineNumbers.Text = ""
     for i = 1, #lines do
-        lineText = lineText .. tostring(i) .. "\n"
+        LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
     end
-    LineNumbers.Text = lineText
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20) -- Adjust canvas size for scrolling
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20) -- Update canvas size
 end
 
 TextBox:GetPropertyChangedSignal("Text"):Connect(function()
@@ -155,8 +148,29 @@ CopyButton.MouseButton1Click:Connect(function()
 end)
 
 ExecuteButton.MouseButton1Click:Connect(function()
-    local scriptToExecute = TextBox.Text
-    loadstring(scriptToExecute)()
+    loadstring(TextBox.Text)()
+end)
+
+local dragToggle, dragStart, dragPos
+Upper.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        dragPos = MainFrame.Position
+    end
+end)
+
+Upper.InputChanged:Connect(function(input)
+    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+    end
+end)
+
+Upper.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = false
+    end
 end)
 
 -- Initial Line Numbers
