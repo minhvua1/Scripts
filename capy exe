@@ -87,6 +87,7 @@ LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
 LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
+LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
 TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -201,3 +202,24 @@ end
 
 enableDrag(MainFrame)
 enableDrag(MinimizedFrame)
+
+ExecuteButton.MouseButton1Click:Connect(function()
+    local success, err = pcall(function()
+        loadstring(TextBox.Text)()
+    end)
+    if not success then
+        print("Error executing script: " .. err)
+    end
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(TextBox.Text)
+    else
+        print("Clipboard not supported.")
+    end
+end)
