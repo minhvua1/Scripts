@@ -7,7 +7,6 @@
 ]]--
 
 -- Instances
-
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
@@ -24,7 +23,6 @@ local MinimizedFrame = Instance.new("Frame")
 local ImageButton = Instance.new("ImageButton")
 
 -- Properties
-
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -55,7 +53,6 @@ TitleLabel.Text = "Capy"
 TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230) -- Chữ màu trắng xám
 TitleLabel.TextSize = 18
 TitleLabel.TextWrapped = false
-TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 MinimizeButton.Parent = Upper
 MinimizeButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
@@ -142,79 +139,56 @@ CopyButton.TextSize = 14
 -- Minimized Frame
 MinimizedFrame.Name = "MinimizedFrame"
 MinimizedFrame.Parent = ScreenGui
-MinimizedFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+MinimizedFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Khung khi thu nhỏ
 MinimizedFrame.BorderSizePixel = 0
 MinimizedFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-MinimizedFrame.Size = UDim2.new(0, 60, 0, 60)
-MinimizedFrame.Visible = false
+MinimizedFrame.Size = UDim2.new(0, 100, 0, 100)
+MinimizedFrame.Visible = false  -- Ban đầu không hiển thị
 MinimizedFrame.Active = true
+MinimizedFrame.Draggable = false -- Không kéo được bằng chuột
 
 ImageButton.Parent = MinimizedFrame
-ImageButton.BackgroundTransparency = 1
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
-ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
+ImageButton.Image = "rbxassetid://your_image_id"  -- Thay thế bằng id hình ảnh bạn muốn
+ImageButton.ImageTransparency = 0.5
 
--- Functions
-local function updateLineNumbers()
-    local lines = string.split(TextBox.Text, "\n")
-    LineNumbers.Text = ""
-    for i = 1, #lines do
-        LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
-    end
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20)
-end
-
-TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
-
+-- Minimize/Restore functionality
 MinimizeButton.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    MinimizedFrame.Visible = true
+    if MainFrame.Visible then
+        MainFrame.Visible = false
+        MinimizedFrame.Visible = true
+    else
+        MainFrame.Visible = true
+        MinimizedFrame.Visible = false
+    end
 end)
 
-ImageButton.MouseButton1Click:Connect(function()
-    MinimizedFrame.Visible = false
-    MainFrame.Visible = true
-end)
-
--- Drag Functions for MinimizedFrame
-local function enableDragForMinimizedFrame(frame)
-    local dragToggle, dragStart, dragPos
+-- Allow drag functionality for Minimized Frame on Mobile
+local function dragFrame(frame)
+    local UserInputService = game:GetService("UserInputService")
+    
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = true
-            dragStart = input.Position
-            dragPos = frame.Position
-        end
-    end)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            local dragStart = input.Position
+            local startPos = frame.Position
 
-    frame.InputChanged:Connect(function(input)
-        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(dragPos.X.Scale, delta.X, dragPos.Y.Scale, delta.Y)
-        end
-    end)
+            local function updatePosition(input)
+                local delta = input.Position - dragStart
+                frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            end
 
-    frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = false
+            local function endDrag()
+                UserInputService.InputChanged:Disconnect(updatePosition)
+                UserInputService.InputEnded:Disconnect(endDrag)
+            end
+
+            UserInputService.InputChanged:Connect(updatePosition)
+            UserInputService.InputEnded:Connect(endDrag)
         end
     end)
 end
 
--- Enable dragging for both CapyHub and MinimizedFrame
-enableDragForMinimizedFrame(MinimizedFrame)
-enableDragForMinimizedFrame(MainFrame)
-
--- Button functionality
-ExecuteButton.MouseButton1Click:Connect(function()
-    -- Place your execute script logic here
-    print("Execute clicked")
-end)
-
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
-
-CopyButton.MouseButton1Click:Connect(function()
-    setclipboard(TextBox.Text)
-end)
+-- Enable dragging for both Capy Executor and Minimized Frame
+dragFrame(MainFrame)
+dragFrame(MinimizedFrame)
