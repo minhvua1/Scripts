@@ -95,14 +95,14 @@ TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0, 35, 0, 0)
 TextBox.Size = UDim2.new(1, -35, 1, 0)
 TextBox.Font = Enum.Font.Code
-TextBox.Text = "print(\"hello world\")"
+TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextWrapped = false -- Cho phép kéo ngang
-TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
-TextBox.TextYAlignment = Enum.TextYAlignment.Top   -- Căn trên
+TextBox.TextWrapped = false
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.TextYAlignment = Enum.TextYAlignment.Top
 
 -- Down Bar
 Down.Name = "Down"
@@ -149,11 +149,6 @@ MinimizedFrame.Size = UDim2.new(0, 60, 0, 60)
 MinimizedFrame.Visible = false
 MinimizedFrame.Active = true
 
--- Thêm UICorner để làm MinimizedFrame thành hình tròn
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 30)  -- Chỉnh góc tròn
-UICorner.Parent = MinimizedFrame
-
 ImageButton.Parent = MinimizedFrame
 ImageButton.BackgroundTransparency = 1
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
@@ -174,6 +169,7 @@ TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
 MinimizeButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     MinimizedFrame.Visible = true
+    enableDrag(MinimizedFrame) -- Thêm drag vào MinimizedFrame
 end)
 
 ImageButton.MouseButton1Click:Connect(function()
@@ -181,26 +177,31 @@ ImageButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
--- Chức năng kéo cho MinimizedFrame (cả trên điện thoại và máy tính)
-local dragToggle, dragStart, dragPos
+-- Drag Functions
+local function enableDrag(frame)
+    local dragToggle, dragStart, dragPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true
+            dragStart = input.Position
+            dragPos = frame.Position
+        end
+    end)
 
-MinimizedFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = true
-        dragStart = input.Position
-        dragPos = MinimizedFrame.Position
-    end
-end)
+    frame.InputChanged:Connect(function(input)
+        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+        end
+    end)
 
-MinimizedFrame.InputChanged:Connect(function(input)
-    if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        MinimizedFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
-    end
-end)
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = false
+        end
+    end)
+end
 
-MinimizedFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = false
-    end
-end)
+-- Update line numbers
+updateLineNumbers()
+
