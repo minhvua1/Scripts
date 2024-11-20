@@ -1,7 +1,7 @@
 --[[
 
-        Gui2Lua™
-        10zOfficial
+        GitHub-Style Script Editor
+        By ChatGPT
         Version 1.0.0
 
 ]]
@@ -13,9 +13,9 @@ local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
 local TextLabel = Instance.new("TextLabel")
 local Down = Instance.new("Frame")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local LineNumbers = Instance.new("TextLabel")
 local TextBox = Instance.new("TextBox")
-local LineCountFrame = Instance.new("Frame") -- Frame for line count
-local LineCountLabel = Instance.new("TextLabel") -- Label to show line count
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local CopyButton = Instance.new("TextButton")
@@ -30,8 +30,8 @@ MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.new(0.152941, 0.152941, 0.152941)
 MainFrame.BorderColor3 = Color3.new(0, 0, 0)
 MainFrame.BorderSizePixel = 0
-MainFrame.Position = UDim2.new(0.0467127673, 0, 0.149402395, 0)
-MainFrame.Size = UDim2.new(0, 712, 0, 327)
+MainFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
+MainFrame.Size = UDim2.new(0, 712, 0, 400)
 
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
@@ -46,7 +46,7 @@ TextLabel.BorderColor3 = Color3.new(0, 0, 0)
 TextLabel.BorderSizePixel = 0
 TextLabel.Size = UDim2.new(0, 62, 0, 22)
 TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "Capy"
+TextLabel.Text = "Editor"
 TextLabel.TextColor3 = Color3.new(0, 0, 0)
 TextLabel.TextScaled = true
 TextLabel.TextSize = 20
@@ -59,56 +59,54 @@ Down.Parent = MainFrame
 Down.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
 Down.BorderColor3 = Color3.new(0, 0, 0)
 Down.BorderSizePixel = 0
-Down.Position = UDim2.new(0, 0, 0.89296639, 0)
+Down.Position = UDim2.new(0, 0, 0.9, 0)
 Down.Size = UDim2.new(0, 712, 0, 35)
 
-TextBox.Parent = MainFrame
-TextBox.BackgroundColor3 = Color3.new(0.654902, 0.654902, 0.654902)
-TextBox.BorderColor3 = Color3.new(0, 0, 0)
+ScrollingFrame.Parent = MainFrame
+ScrollingFrame.BackgroundColor3 = Color3.new(0.654902, 0.654902, 0.654902)
+ScrollingFrame.BorderColor3 = Color3.new(0, 0, 0)
+ScrollingFrame.Position = UDim2.new(0, 0, 0.055, 0)
+ScrollingFrame.Size = UDim2.new(0, 712, 0, 350)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.ScrollBarThickness = 10
+ScrollingFrame.ScrollBarImageColor3 = Color3.new(0.4, 0.4, 0.4)
+
+LineNumbers.Name = "LineNumbers"
+LineNumbers.Parent = ScrollingFrame
+LineNumbers.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
+LineNumbers.BorderSizePixel = 0
+LineNumbers.Size = UDim2.new(0, 30, 1, 0)
+LineNumbers.Font = Enum.Font.SourceSans
+LineNumbers.Text = "1\n2\n3\n4\n5"
+LineNumbers.TextColor3 = Color3.new(0, 0, 0)
+LineNumbers.TextSize = 14
+LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
+LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
+
+TextBox.Parent = ScrollingFrame
+TextBox.BackgroundColor3 = Color3.new(1, 1, 1)
 TextBox.BorderSizePixel = 0
-TextBox.Position = UDim2.new(0.0758426934, 0, 0.110091746, 0)
-TextBox.Size = UDim2.new(0, 545, 0, 238) -- Adjust size to make space for the line count
+TextBox.Position = UDim2.new(0, 35, 0, 0)
+TextBox.Size = UDim2.new(1, -35, 1, 0)
 TextBox.Font = Enum.Font.SourceSans
 TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.new(0, 0, 0)
 TextBox.TextSize = 14
+TextBox.TextWrapped = false
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
-TextBox.TextWrapped = true
-TextBox.ClearTextOnFocus = false  -- Keep the text when clicking the textbox
+TextBox.ClearTextOnFocus = false
+TextBox.MultiLine = true
 
--- Line Count Frame
-LineCountFrame.Name = "LineCountFrame"
-LineCountFrame.Parent = MainFrame
-LineCountFrame.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-LineCountFrame.BorderColor3 = Color3.new(0, 0, 0)
-LineCountFrame.BorderSizePixel = 0
-LineCountFrame.Position = UDim2.new(0, 0, 0.110091746, 0) -- Align with TextBox
-LineCountFrame.Size = UDim2.new(0, 30, 0, 238) -- Make it a thin bar on the left
-
-LineCountLabel.Parent = LineCountFrame
-LineCountLabel.BackgroundColor3 = Color3.new(1, 1, 1)
-LineCountLabel.BorderSizePixel = 0
-LineCountLabel.Position = UDim2.new(0, 0, 0, 0)
-LineCountLabel.Size = UDim2.new(0, 30, 0, 238)
-LineCountLabel.Font = Enum.Font.SourceSans
-LineCountLabel.TextColor3 = Color3.new(0, 0, 0)
-LineCountLabel.TextSize = 14
-LineCountLabel.TextXAlignment = Enum.TextXAlignment.Center
-LineCountLabel.TextYAlignment = Enum.TextYAlignment.Top
-LineCountLabel.Text = "1" -- Default line count
-
--- Add Execute Button
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-ExecuteButton.Position = UDim2.new(0.075, 0, 0.1, 0)
+ExecuteButton.Position = UDim2.new(0.05, 0, 0.1, 0)
 ExecuteButton.Size = UDim2.new(0, 100, 0, 30)
 ExecuteButton.Font = Enum.Font.SourceSans
 ExecuteButton.Text = "Execute"
 ExecuteButton.TextColor3 = Color3.new(1, 1, 1)
 ExecuteButton.TextSize = 14
 
--- Add Clear Button
 ClearButton.Parent = Down
 ClearButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
 ClearButton.Position = UDim2.new(0.3, 0, 0.1, 0)
@@ -118,77 +116,48 @@ ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.new(1, 1, 1)
 ClearButton.TextSize = 14
 
--- Add Copy Button
 CopyButton.Parent = Down
 CopyButton.BackgroundColor3 = Color3.new(0.419608, 0.419608, 0.419608)
-CopyButton.Position = UDim2.new(0.525, 0, 0.1, 0)
+CopyButton.Position = UDim2.new(0.55, 0, 0.1, 0)
 CopyButton.Size = UDim2.new(0, 100, 0, 30)
 CopyButton.Font = Enum.Font.SourceSans
-CopyButton.Text = "Copy Script"
+CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.new(1, 1, 1)
 CopyButton.TextSize = 14
 
 -- Functions
 
-local function updateLineCount()
+local function updateLineNumbers()
     local lines = string.split(TextBox.Text, "\n")
-    local lineNumbers = ""
+    local lineText = ""
     for i = 1, #lines do
-        lineNumbers = lineNumbers .. i .. "\n"
+        lineText = lineText .. tostring(i) .. "\n"
     end
-    LineCountLabel.Text = lineNumbers
+    LineNumbers.Text = lineText
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20) -- Adjust canvas size for scrolling
 end
 
--- Event Handlers
-
 TextBox:GetPropertyChangedSignal("Text"):Connect(function()
-    updateLineCount()
+    updateLineNumbers()
 end)
 
-ExecuteButton.MouseButton1Click:Connect(function()
-    -- Here you can add functionality to execute the code in TextBox
-    local scriptToExecute = TextBox.Text
-    loadstring(scriptToExecute)()
+ScrollingFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+    LineNumbers.Position = UDim2.new(0, 0, 0, -ScrollingFrame.CanvasPosition.Y)
 end)
 
 ClearButton.MouseButton1Click:Connect(function()
     TextBox.Text = ""
-    updateLineCount()
+    updateLineNumbers()
 end)
 
 CopyButton.MouseButton1Click:Connect(function()
-    setclipboard(TextBox.Text) -- Copies the content of the TextBox
+    setclipboard(TextBox.Text)
 end)
 
--- Draggable logic
-local dragToggle = nil
-local dragStart = nil
-local dragPos = nil
-
-MainFrame.InputBegan:Connect(function(input, gameProcessedEvent)
-    if gameProcessedEvent then return end
-
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = true
-        dragStart = input.Position
-        dragPos = MainFrame.Position
-    end
+ExecuteButton.MouseButton1Click:Connect(function()
+    local scriptToExecute = TextBox.Text
+    loadstring(scriptToExecute)()
 end)
 
-MainFrame.InputChanged:Connect(function(input)
-    if dragToggle then
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            local delta = input.Position - dragStart
-            MainFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
-        end
-    end
-end)
-
-MainFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = false
-    end
-end)
-
--- Initial line count update
-updateLineCount()
+-- Initial Line Numbers
+updateLineNumbers()
