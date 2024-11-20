@@ -95,7 +95,7 @@ TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0, 35, 0, 0)
 TextBox.Size = UDim2.new(1, -35, 1, 0)
 TextBox.Font = Enum.Font.Code
-TextBox.Text = "-- print(\"hello world\")"
+TextBox.Text = "print(\"hello world\")"
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
@@ -111,7 +111,7 @@ Down.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Down.Position = UDim2.new(0, 0, 0.8, 0)
 Down.Size = UDim2.new(1, 0, 0.2, 0)
 
--- Reposition Execute, Clear, and Copy buttons closer
+-- Buttons
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 ExecuteButton.Size = UDim2.new(0, 85, 0, 30)
@@ -154,54 +154,67 @@ ImageButton.BackgroundTransparency = 1
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
 ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
 
--- Functions
-local function updateLineNumbers()
-    local lines = string.split(TextBox.Text, "\n")
-    LineNumbers.Text = ""
-    for i = 1, #lines do
-        LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
-    end
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20)
+-- Drag Function
+local function enableDrag(frame)
+    local dragging = false
+    local dragInput, dragStart, startPos
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
 end
 
-TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
+-- Enable Dragging
+enableDrag(MainFrame)
+enableDrag(MinimizedFrame)
+
+-- Button Functions
+ExecuteButton.MouseButton1Click:Connect(function()
+    print("Execute button clicked!")
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(TextBox.Text)
+end)
 
 MinimizeButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     MinimizedFrame.Visible = true
-    enableDrag(MinimizedFrame) -- Thêm drag vào MinimizedFrame
 end)
 
 ImageButton.MouseButton1Click:Connect(function()
     MinimizedFrame.Visible = false
     MainFrame.Visible = true
 end)
-
--- Drag Functions
-local function enableDrag(frame)
-    local dragToggle, dragStart, dragPos
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = true
-            dragStart = input.Position
-            dragPos = frame.Position
-        end
-    end)
-
-    frame.InputChanged:Connect(function(input)
-        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
-        end
-    end)
-
-    frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = false
-        end
-    end)
-end
-
--- Update line numbers
-updateLineNumbers()
-
