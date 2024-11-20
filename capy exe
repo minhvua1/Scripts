@@ -201,5 +201,20 @@ local function enableDragForMinimizedFrame(frame)
     end)
 end
 
--- Enable drag for MinimizedFrame
+-- Enable dragging for both CapyHub and MinimizedFrame
 enableDragForMinimizedFrame(MinimizedFrame)
+enableDragForMinimizedFrame(MainFrame)
+
+-- Button functionality
+ExecuteButton.MouseButton1Click:Connect(function()
+    -- Place your execute script logic here
+    print("Execute clicked")
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(TextBox.Text)
+end)
