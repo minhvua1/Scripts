@@ -100,8 +100,6 @@ TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
 TextBox.TextWrapped = false -- Cho phép kéo ngang
-TextBox.TextXAlignment = Enum.TextXAlignment.Left -- Chỉnh sửa để văn bản nằm ở góc trái
-TextBox.TextYAlignment = Enum.TextYAlignment.Top -- Đảm bảo văn bản bắt đầu từ trên cùng
 
 -- Down Bar
 Down.Name = "Down"
@@ -193,3 +191,32 @@ local function enableDrag(frame)
     end)
 
     frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = false
+        end
+    end)
+end
+
+enableDrag(MainFrame)
+enableDrag(MinimizedFrame)
+
+ExecuteButton.MouseButton1Click:Connect(function()
+    local success, err = pcall(function()
+        loadstring(TextBox.Text)()
+    end)
+    if not success then
+        print("Error executing script: " .. err)
+    end
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(TextBox.Text)
+    else
+        print("Clipboard not supported.")
+    end
+end)
