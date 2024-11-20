@@ -2,7 +2,7 @@
 
         Capy Executor
         By ChatGPT
-        Version 4.0.0
+        Version 5.0.0
 
 ]]--
 
@@ -19,7 +19,7 @@ local Down = Instance.new("Frame")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local CopyButton = Instance.new("TextButton")
-local FloatingButton = Instance.new("TextButton") -- Nút mới
+local FloatingButton = Instance.new("TextButton")
 
 -- Properties
 
@@ -69,11 +69,13 @@ LineNumbers.Parent = ScrollingFrame
 LineNumbers.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 LineNumbers.BorderSizePixel = 0
 LineNumbers.Size = UDim2.new(0, 30, 1, 0)
+LineNumbers.Position = UDim2.new(0, 0, 0, 0)
 LineNumbers.Font = Enum.Font.SourceSans
 LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
 LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
+LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
 TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -86,6 +88,8 @@ TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.TextYAlignment = Enum.TextYAlignment.Top
 
 -- Down Bar
 Down.Name = "Down"
@@ -169,7 +173,19 @@ FloatingButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)
 
--- Other button functions
+-- Update Line Numbers
+local function updateLineNumbers()
+    local lines = string.split(TextBox.Text, "\n")
+    LineNumbers.Text = ""
+    for i = 1, #lines do
+        LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
+    end
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20)
+end
+
+TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
+
+-- Button Functions
 ExecuteButton.MouseButton1Click:Connect(function()
     local success, err = pcall(function()
         loadstring(TextBox.Text)()
