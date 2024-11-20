@@ -114,7 +114,7 @@ Down.Size = UDim2.new(1, 0, 0.2, 0)
 -- Reposition Execute, Clear, and Copy buttons closer
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-ExecuteButton.Size = UDim2.new(0, 90, 0, 30)
+ExecuteButton.Size = UDim2.new(0, 80, 0, 30)
 ExecuteButton.Position = UDim2.new(0.05, 0, 0.5, -15)
 ExecuteButton.Font = Enum.Font.SourceSans
 ExecuteButton.Text = "Execute"
@@ -123,8 +123,8 @@ ExecuteButton.TextSize = 14
 
 ClearButton.Parent = Down
 ClearButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-ClearButton.Size = UDim2.new(0, 90, 0, 30)
-ClearButton.Position = UDim2.new(0.35, 0, 0.5, -15)
+ClearButton.Size = UDim2.new(0, 80, 0, 30)
+ClearButton.Position = UDim2.new(0.3, 0, 0.5, -15)
 ClearButton.Font = Enum.Font.SourceSans
 ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -132,8 +132,8 @@ ClearButton.TextSize = 14
 
 CopyButton.Parent = Down
 CopyButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-CopyButton.Size = UDim2.new(0, 90, 0, 30)
-CopyButton.Position = UDim2.new(0.65, 0, 0.5, -15)
+CopyButton.Size = UDim2.new(0, 80, 0, 30)
+CopyButton.Position = UDim2.new(0.55, 0, 0.5, -15)
 CopyButton.Font = Enum.Font.SourceSans
 CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
