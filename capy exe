@@ -42,7 +42,7 @@ MainFrame.ClipsDescendants = true
 -- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Xám đậm hơn
 Upper.BorderSizePixel = 0
 Upper.Size = UDim2.new(1, 0, 0, 25)
 
@@ -52,8 +52,8 @@ TitleLabel.BorderSizePixel = 0
 TitleLabel.Size = UDim2.new(0, 100, 0, 25)
 TitleLabel.Font = Enum.Font.SourceSans
 TitleLabel.Text = "Capy"
-TitleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Màu đen cho chữ "Capy"
-TitleLabel.TextSize = 24  -- Kích thước chữ lớn hơn
+TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230) -- Chữ màu trắng xám
+TitleLabel.TextSize = 18
 TitleLabel.TextWrapped = false
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -111,31 +111,29 @@ Down.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Down.Position = UDim2.new(0, 0, 0.8, 0)
 Down.Size = UDim2.new(1, 0, 0.2, 0)
 
--- Nút Execute
+-- Reposition Execute, Clear, and Copy buttons closer
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-ExecuteButton.Size = UDim2.new(0, 90, 0, 30)  -- Giảm size của nút một chút
-ExecuteButton.Position = UDim2.new(0.05, 0, 0.5, -15)  -- Vị trí của nút
+ExecuteButton.Size = UDim2.new(0, 85, 0, 30)
+ExecuteButton.Position = UDim2.new(0.05, 0, 0.5, -15)
 ExecuteButton.Font = Enum.Font.SourceSans
 ExecuteButton.Text = "Execute"
 ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ExecuteButton.TextSize = 14
 
--- Nút Clear
 ClearButton.Parent = Down
 ClearButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-ClearButton.Size = UDim2.new(0, 90, 0, 30)  -- Giảm size của nút
-ClearButton.Position = UDim2.new(0.37, 0, 0.5, -15)  -- Điều chỉnh vị trí của nút Clear
+ClearButton.Size = UDim2.new(0, 85, 0, 30)
+ClearButton.Position = UDim2.new(0.28, 0, 0.5, -15)
 ClearButton.Font = Enum.Font.SourceSans
 ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ClearButton.TextSize = 14
 
--- Nút Copy
 CopyButton.Parent = Down
 CopyButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-CopyButton.Size = UDim2.new(0, 90, 0, 30)  -- Giảm size của nút
-CopyButton.Position = UDim2.new(0.69, 0, 0.5, -15)  -- Điều chỉnh vị trí của nút Copy
+CopyButton.Size = UDim2.new(0, 85, 0, 30)
+CopyButton.Position = UDim2.new(0.51, 0, 0.5, -15)
 CopyButton.Font = Enum.Font.SourceSans
 CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -190,9 +188,9 @@ local function enableDrag(frame)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             local delta = input.Position - dragStart
-            frame.Position = UDim2.new(dragPos.X.Scale, delta.X, dragPos.Y.Scale, delta.Y)
+            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
         end
     end)
 
@@ -204,4 +202,25 @@ local function enableDrag(frame)
 end
 
 enableDrag(MainFrame)
+enableDrag(MinimizedFrame)
 
+ExecuteButton.MouseButton1Click:Connect(function()
+    local success, err = pcall(function()
+        loadstring(TextBox.Text)()
+    end)
+    if not success then
+        print("Error executing script: " .. err)
+    end
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(TextBox.Text)
+    else
+        print("Clipboard not supported.")
+    end
+end)
