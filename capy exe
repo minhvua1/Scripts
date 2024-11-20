@@ -139,13 +139,13 @@ CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CopyButton.TextSize = 14
 
--- Minimized Frame (đã thay đổi vị trí)
+-- Minimized Frame (đã thay đổi vị trí và kích thước)
 MinimizedFrame.Name = "MinimizedFrame"
 MinimizedFrame.Parent = ScreenGui
 MinimizedFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 MinimizedFrame.BorderSizePixel = 0
-MinimizedFrame.Position = UDim2.new(0, 10, 1, -70)  -- Đặt ở góc trái dưới, cách 10 pixel từ trái và 70 pixel từ dưới
-MinimizedFrame.Size = UDim2.new(0, 60, 0, 60)
+MinimizedFrame.Position = UDim2.new(0.5, -50, 0, 10)  -- Đặt ở gần giữa góc trên
+MinimizedFrame.Size = UDim2.new(0, 50, 0, 50)  -- Kích thước nhỏ hơn
 MinimizedFrame.Visible = false
 MinimizedFrame.Active = true
 
@@ -176,11 +176,35 @@ ImageButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
--- Drag Functions
+-- Nút Execute
+ExecuteButton.MouseButton1Click:Connect(function()
+    local code = TextBox.Text
+    local success, err = pcall(function()
+        loadstring(code)()
+    end)
+    if not success then
+        warn("Error executing code: " .. err)
+    end
+end)
+
+-- Nút Clear
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+-- Nút Copy
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(TextBox.Text)
+end)
+
+-- Drag function
+local dragToggle = false
+local dragStart = nil
+local dragPos = nil
+
 local function enableDrag(frame)
-    local dragToggle, dragStart, dragPos
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragToggle = true
             dragStart = input.Position
             dragPos = frame.Position
@@ -188,14 +212,14 @@ local function enableDrag(frame)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
             local delta = input.Position - dragStart
             frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
         end
     end)
 
     frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragToggle = false
         end
     end)
