@@ -1,22 +1,34 @@
+--[[
+
+        Capy Editor
+        By ChatGPT
+        Version 1.3.0
+
+]]
+
 -- Instances
 
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
 local TextLabel = Instance.new("TextLabel")
-local Down = Instance.new("Frame")
+local MinimizeButton = Instance.new("TextButton")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local LineNumbers = Instance.new("TextLabel")
 local TextBox = Instance.new("TextBox")
+local Down = Instance.new("Frame")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local CopyButton = Instance.new("TextButton")
+local MinimizedFrame = Instance.new("Frame")
+local ImageButton = Instance.new("ImageButton")
 
 -- Properties
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
+-- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
@@ -24,7 +36,9 @@ MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
 MainFrame.Active = true
+MainFrame.Visible = true
 
+-- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
 Upper.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
@@ -36,7 +50,7 @@ TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 TextLabel.BorderSizePixel = 0
 TextLabel.Size = UDim2.new(0, 60, 0, 20)
 TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "Editor"
+TextLabel.Text = "Capy"
 TextLabel.TextColor3 = Color3.new(0, 0, 0)
 TextLabel.TextScaled = true
 TextLabel.TextSize = 20
@@ -44,12 +58,17 @@ TextLabel.TextWrapped = true
 TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 TextLabel.TextYAlignment = Enum.TextYAlignment.Top
 
-Down.Name = "Down"
-Down.Parent = MainFrame
-Down.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
-Down.Position = UDim2.new(0, 0, 0.9, 0)
-Down.Size = UDim2.new(0, 400, 0, 30)
+MinimizeButton.Parent = Upper
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+MinimizeButton.BorderSizePixel = 0
+MinimizeButton.Position = UDim2.new(0.9, -20, 0, 0)
+MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
+MinimizeButton.Font = Enum.Font.SourceSans
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.new(0, 0, 0)
+MinimizeButton.TextSize = 14
 
+-- Scrolling Frame
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
 ScrollingFrame.BorderSizePixel = 0
@@ -79,11 +98,18 @@ TextBox.Font = Enum.Font.SourceSans
 TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.new(0, 0, 0)
 TextBox.TextSize = 12
-TextBox.TextWrapped = false
+TextBox.TextWrapped = true -- Auto-wrap text
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
+
+-- Down Bar
+Down.Name = "Down"
+Down.Parent = MainFrame
+Down.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+Down.Position = UDim2.new(0, 0, 0.9, 0)
+Down.Size = UDim2.new(0, 400, 0, 30)
 
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
@@ -111,6 +137,22 @@ CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.new(1, 1, 1)
 CopyButton.TextSize = 14
 
+-- Minimized Frame
+MinimizedFrame.Name = "MinimizedFrame"
+MinimizedFrame.Parent = ScreenGui
+MinimizedFrame.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+MinimizedFrame.BorderSizePixel = 0
+MinimizedFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
+MinimizedFrame.Size = UDim2.new(0, 50, 0, 50)
+MinimizedFrame.Visible = false
+MinimizedFrame.Active = true
+
+ImageButton.Parent = MinimizedFrame
+ImageButton.BackgroundColor3 = Color3.new(1, 1, 1)
+ImageButton.BackgroundTransparency = 1
+ImageButton.Size = UDim2.new(1, 0, 1, 0)
+ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
+
 -- Functions
 
 local function updateLineNumbers()
@@ -119,28 +161,21 @@ local function updateLineNumbers()
     for i = 1, #lines do
         LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
     end
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 18) -- Update canvas size
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 18)
 end
 
 TextBox:GetPropertyChangedSignal("Text"):Connect(function()
     updateLineNumbers()
 end)
 
-ScrollingFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-    LineNumbers.Position = UDim2.new(0, 0, 0, -ScrollingFrame.CanvasPosition.Y)
+MinimizeButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    MinimizedFrame.Visible = true
 end)
 
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-    updateLineNumbers()
-end)
-
-CopyButton.MouseButton1Click:Connect(function()
-    setclipboard(TextBox.Text)
-end)
-
-ExecuteButton.MouseButton1Click:Connect(function()
-    loadstring(TextBox.Text)()
+ImageButton.MouseButton1Click:Connect(function()
+    MinimizedFrame.Visible = false
+    MainFrame.Visible = true
 end)
 
 local dragToggle, dragStart, dragPos
@@ -165,5 +200,26 @@ Upper.InputEnded:Connect(function(input)
     end
 end)
 
--- Initial Line Numbers
+MinimizedFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        dragPos = MinimizedFrame.Position
+    end
+end)
+
+MinimizedFrame.InputChanged:Connect(function(input)
+    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        local delta = input.Position - dragStart
+        MinimizedFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+    end
+end)
+
+MinimizedFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = false
+    end
+end)
+
+-- Initialize
 updateLineNumbers()
