@@ -3,7 +3,7 @@
         Capy Executor
         Mobile Dragable Fix
         By ChatGPT
-        Version 5.2.0
+        Version 5.3.0
 
 ]]--
 
@@ -177,7 +177,7 @@ ImageButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
--- Drag Functions for MinimizedFrame only
+-- Drag Functions for Capy Executor and MinimizedFrame
 local function enableDrag(frame)
     local dragToggle, dragStart, dragPos
     frame.InputBegan:Connect(function(input)
@@ -202,7 +202,8 @@ local function enableDrag(frame)
     end)
 end
 
--- Enable drag for MinimizedFrame
+-- Enable drag for both MainFrame and MinimizedFrame
+enableDrag(MainFrame)
 enableDrag(MinimizedFrame)
 
 -- Button click events (execute, clear, copy)
