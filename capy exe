@@ -1,8 +1,8 @@
 --[[
 
-    Capy Executor
-    By ChatGPT
-    Version 2.0.0
+        Capy Executor
+        By ChatGPT
+        Version 2.0.0
 
 ]]
 
@@ -54,7 +54,7 @@ TitleLabel.Font = Enum.Font.SourceSans
 TitleLabel.Text = "Capy"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.TextSize = 18
-TitleLabel.TextWrapped = true
+TitleLabel.TextWrapped = false
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 MinimizeButton.Parent = Upper
@@ -76,7 +76,6 @@ ScrollingFrame.Size = UDim2.new(1, 0, 0.7, 0)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollingFrame.ScrollBarThickness = 8
 ScrollingFrame.ScrollingEnabled = true
-ScrollingFrame.HorizontalScrollBarVisible = true -- Cho phép thanh cuộn ngang
 
 LineNumbers.Name = "LineNumbers"
 LineNumbers.Parent = ScrollingFrame
@@ -88,6 +87,7 @@ LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
 LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
+LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
 TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -100,37 +100,9 @@ TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextWrapped = false -- Tắt xuống dòng tự động
-TextBox.TextXAlignment = Enum.TextXAlignment.Left -- Căn trái nội dung
-
--- Hàm cập nhật dòng số
-local function updateLineNumbers()
-    local lines = string.split(TextBox.Text, "\n")
-    LineNumbers.Text = ""
-    for i = 1, #lines do
-        LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
-    end
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20)
-end
-
-TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
-
--- Hàm cập nhật kích thước ScrollingFrame khi TextBox thay đổi
-local function updateScrollingFrameSize()
-    local lines = string.split(TextBox.Text, "\n")
-    local maxWidth = 0
-    for _, line in ipairs(lines) do
-        local width = TextBox.TextBounds.X
-        maxWidth = math.max(maxWidth, width)
-    end
-    -- Cập nhật lại CanvasSize cho thanh cuộn ngang
-    ScrollingFrame.CanvasSize = UDim2.new(0, maxWidth + 35, 0, #lines * 20)
-end
-
-TextBox:GetPropertyChangedSignal("Text"):Connect(updateScrollingFrameSize)
-
--- Cập nhật lần đầu
-updateScrollingFrameSize()
+TextBox.TextWrapped = false -- Cho phép kéo ngang
+TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
+TextBox.TextYAlignment = Enum.TextYAlignment.Top   -- Căn trên
 
 -- Down Bar
 Down.Name = "Down"
@@ -182,6 +154,17 @@ ImageButton.Size = UDim2.new(1, 0, 1, 0)
 ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
 
 -- Functions
+local function updateLineNumbers()
+    local lines = string.split(TextBox.Text, "\n")
+    LineNumbers.Text = ""
+    for i = 1, #lines do
+        LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
+    end
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20)
+end
+
+TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
+
 MinimizeButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     MinimizedFrame.Visible = true
@@ -194,10 +177,7 @@ end)
 
 -- Drag Functions
 local function enableDrag(frame)
-    local dragToggle = false
-    local dragStart = Vector3.new()
-    local dragPos = frame.Position
-
+    local dragToggle, dragStart, dragPos
     frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragToggle = true
@@ -207,9 +187,9 @@ local function enableDrag(frame)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             local delta = input.Position - dragStart
-            frame.Position = UDim2.new(dragPos.X.Scale, delta.X, dragPos.Y.Scale, delta.Y)
+            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
         end
     end)
 
@@ -221,3 +201,25 @@ local function enableDrag(frame)
 end
 
 enableDrag(MainFrame)
+enableDrag(MinimizedFrame)
+
+ExecuteButton.MouseButton1Click:Connect(function()
+    local success, err = pcall(function()
+        loadstring(TextBox.Text)()
+    end)
+    if not success then
+        print("Error executing script: " .. err)
+    end
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(TextBox.Text)
+    else
+        print("Clipboard not supported.")
+    end
+end)
