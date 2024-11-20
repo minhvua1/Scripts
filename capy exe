@@ -1,10 +1,13 @@
---[[ 
-    Capy Executor
-    By ChatGPT
-    Version 2.0.0
+--[[
+
+        Capy Executor
+        By ChatGPT
+        Version 2.0.0
+
 ]]
 
 -- Instances
+
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
@@ -19,16 +22,16 @@ local ClearButton = Instance.new("TextButton")
 local CopyButton = Instance.new("TextButton")
 local MinimizedFrame = Instance.new("Frame")
 local ImageButton = Instance.new("ImageButton")
-local ToggleButton = Instance.new("TextButton")  -- New Toggle button for MinimizedFrame
 
 -- Properties
+
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 -- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Dark gray
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Xám tối
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 600, 0, 350)
@@ -39,7 +42,7 @@ MainFrame.ClipsDescendants = true
 -- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Darker gray
+Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Xám đậm hơn
 Upper.BorderSizePixel = 0
 Upper.Size = UDim2.new(1, 0, 0, 25)
 
@@ -49,8 +52,10 @@ TitleLabel.BorderSizePixel = 0
 TitleLabel.Size = UDim2.new(0, 100, 0, 25)
 TitleLabel.Font = Enum.Font.SourceSans
 TitleLabel.Text = "Capy"
-TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
+TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230) -- Chữ màu trắng xám
 TitleLabel.TextSize = 18
+TitleLabel.TextWrapped = false
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 MinimizeButton.Parent = Upper
 MinimizeButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
@@ -82,6 +87,7 @@ LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
 LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
+LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
 TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -94,9 +100,9 @@ TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextWrapped = false
-TextBox.TextXAlignment = Enum.TextXAlignment.Left
-TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.TextWrapped = false -- Cho phép kéo ngang
+TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
+TextBox.TextYAlignment = Enum.TextYAlignment.Top   -- Căn trên
 
 -- Down Bar
 Down.Name = "Down"
@@ -105,6 +111,7 @@ Down.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Down.Position = UDim2.new(0, 0, 0.8, 0)
 Down.Size = UDim2.new(1, 0, 0.2, 0)
 
+-- Reposition Execute, Clear, and Copy buttons closer
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 ExecuteButton.Size = UDim2.new(0, 85, 0, 30)
@@ -132,12 +139,12 @@ CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CopyButton.TextSize = 14
 
--- Minimized Frame (hidden initially)
+-- Minimized Frame (đã thay đổi vị trí)
 MinimizedFrame.Name = "MinimizedFrame"
 MinimizedFrame.Parent = ScreenGui
 MinimizedFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 MinimizedFrame.BorderSizePixel = 0
-MinimizedFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+MinimizedFrame.Position = UDim2.new(0, 10, 1, -70)  -- Đặt ở góc trái dưới, cách 10 pixel từ trái và 70 pixel từ dưới
 MinimizedFrame.Size = UDim2.new(0, 60, 0, 60)
 MinimizedFrame.Visible = false
 MinimizedFrame.Active = true
@@ -145,15 +152,7 @@ MinimizedFrame.Active = true
 ImageButton.Parent = MinimizedFrame
 ImageButton.BackgroundTransparency = 1
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
-ImageButton.Image = "rbxassetid://12345678"
-
-ToggleButton.Parent = MinimizedFrame
-ToggleButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-ToggleButton.Size = UDim2.new(0, 60, 0, 60)
-ToggleButton.Text = "+"
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.Font = Enum.Font.SourceSans
-ToggleButton.TextSize = 18
+ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
 
 -- Functions
 local function updateLineNumbers()
@@ -172,49 +171,34 @@ MinimizeButton.MouseButton1Click:Connect(function()
     MinimizedFrame.Visible = true
 end)
 
-ToggleButton.MouseButton1Click:Connect(function()
+ImageButton.MouseButton1Click:Connect(function()
     MinimizedFrame.Visible = false
     MainFrame.Visible = true
 end)
 
--- Dragging for mobile
+-- Drag Functions
 local function enableDrag(frame)
-    local dragging, dragInput, startPos
+    local dragToggle, dragStart, dragPos
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            startPos = input.Position
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true
+            dragStart = input.Position
+            dragPos = frame.Position
         end
     end)
-    
+
     frame.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.Touch then
-            local delta = input.Position - startPos
-            frame.Position = UDim2.new(frame.Position.X.Scale, frame.Position.X.Offset + delta.X, frame.Position.Y.Scale, frame.Position.Y.Offset + delta.Y)
+        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
         end
     end)
-    
+
     frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = false
         end
     end)
 end
 
 enableDrag(MainFrame)
-enableDrag(MinimizedFrame)
-enableDrag(ToggleButton)
-
--- Keep functionality for Execute, Clear, and Copy
-ExecuteButton.MouseButton1Click:Connect(function()
-    local scriptText = TextBox.Text
-    loadstring(scriptText)()
-end)
-
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
-
-CopyButton.MouseButton1Click:Connect(function()
-    setclipboard(TextBox.Text)
-end)
