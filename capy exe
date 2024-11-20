@@ -1,8 +1,9 @@
 --[[
 
         Capy Executor
+        Mobile Dragable Fix
         By ChatGPT
-        Version 5.0.0
+        Version 5.1.0
 
 ]]--
 
@@ -12,6 +13,7 @@ local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
 local TitleLabel = Instance.new("TextLabel")
+local MinimizeButton = Instance.new("TextButton")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local LineNumbers = Instance.new("TextLabel")
 local TextBox = Instance.new("TextBox")
@@ -19,7 +21,8 @@ local Down = Instance.new("Frame")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local CopyButton = Instance.new("TextButton")
-local FloatingButton = Instance.new("TextButton")
+local MinimizedFrame = Instance.new("Frame")
+local ImageButton = Instance.new("ImageButton")
 
 -- Properties
 
@@ -29,18 +32,18 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Xám tối
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 600, 0, 350)
 MainFrame.Active = true
-MainFrame.Visible = false -- Mặc định ẩn
+MainFrame.Visible = true
 MainFrame.ClipsDescendants = true
 
 -- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Xám đậm hơn
 Upper.BorderSizePixel = 0
 Upper.Size = UDim2.new(1, 0, 0, 25)
 
@@ -49,10 +52,21 @@ TitleLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 TitleLabel.BorderSizePixel = 0
 TitleLabel.Size = UDim2.new(0, 100, 0, 25)
 TitleLabel.Font = Enum.Font.SourceSans
-TitleLabel.Text = "Capy Executor"
-TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
+TitleLabel.Text = "Capy"
+TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230) -- Chữ màu trắng xám
 TitleLabel.TextSize = 18
+TitleLabel.TextWrapped = false
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+MinimizeButton.Parent = Upper
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+MinimizeButton.BorderSizePixel = 0
+MinimizeButton.Position = UDim2.new(0.95, -20, 0, 0)
+MinimizeButton.Size = UDim2.new(0, 20, 0, 25)
+MinimizeButton.Font = Enum.Font.SourceSans
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.new(1, 1, 1)
+MinimizeButton.TextSize = 18
 
 -- Scrolling Frame
 ScrollingFrame.Parent = MainFrame
@@ -69,7 +83,6 @@ LineNumbers.Parent = ScrollingFrame
 LineNumbers.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 LineNumbers.BorderSizePixel = 0
 LineNumbers.Size = UDim2.new(0, 30, 1, 0)
-LineNumbers.Position = UDim2.new(0, 0, 0, 0)
 LineNumbers.Font = Enum.Font.SourceSans
 LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -88,8 +101,9 @@ TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextXAlignment = Enum.TextXAlignment.Left
-TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.TextWrapped = false -- Cho phép kéo ngang
+TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
+TextBox.TextYAlignment = Enum.TextYAlignment.Top   -- Căn trên
 
 -- Down Bar
 Down.Name = "Down"
@@ -98,6 +112,7 @@ Down.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Down.Position = UDim2.new(0, 0, 0.8, 0)
 Down.Size = UDim2.new(1, 0, 0.2, 0)
 
+-- Reposition Execute, Clear, and Copy buttons closer
 ExecuteButton.Parent = Down
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 ExecuteButton.Size = UDim2.new(0, 85, 0, 30)
@@ -125,55 +140,22 @@ CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CopyButton.TextSize = 14
 
--- Floating Button
-FloatingButton.Parent = ScreenGui
-FloatingButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-FloatingButton.BorderSizePixel = 0
-FloatingButton.Position = UDim2.new(0.05, 0, 0.1, 0)
-FloatingButton.Size = UDim2.new(0, 100, 0, 40)
-FloatingButton.Font = Enum.Font.SourceSans
-FloatingButton.Text = "Toggle Capy"
-FloatingButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-FloatingButton.TextSize = 14
-FloatingButton.Active = true
+-- Minimized Frame
+MinimizedFrame.Name = "MinimizedFrame"
+MinimizedFrame.Parent = ScreenGui
+MinimizedFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+MinimizedFrame.BorderSizePixel = 0
+MinimizedFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+MinimizedFrame.Size = UDim2.new(0, 60, 0, 60)
+MinimizedFrame.Visible = false
+MinimizedFrame.Active = true
 
--- Drag Functions
-local function enableDrag(frame)
-    local dragToggle, dragStart, startPos
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragToggle = true
-            dragStart = input.Position
-            startPos = frame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragToggle = false
-                end
-            end)
-        end
-    end)
+ImageButton.Parent = MinimizedFrame
+ImageButton.BackgroundTransparency = 1
+ImageButton.Size = UDim2.new(1, 0, 1, 0)
+ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
 
-    frame.InputChanged:Connect(function(input)
-        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
-                startPos.X.Scale, startPos.X.Offset + delta.X,
-                startPos.Y.Scale, startPos.Y.Offset + delta.Y
-            )
-        end
-    end)
-end
-
--- Enable dragging for MainFrame and FloatingButton
-enableDrag(MainFrame)
-enableDrag(FloatingButton)
-
--- Toggle visibility of MainFrame
-FloatingButton.MouseButton1Click:Connect(function()
-    MainFrame.Visible = not MainFrame.Visible
-end)
-
--- Update Line Numbers
+-- Functions
 local function updateLineNumbers()
     local lines = string.split(TextBox.Text, "\n")
     LineNumbers.Text = ""
@@ -185,24 +167,41 @@ end
 
 TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
 
--- Button Functions
-ExecuteButton.MouseButton1Click:Connect(function()
-    local success, err = pcall(function()
-        loadstring(TextBox.Text)()
+MinimizeButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    MinimizedFrame.Visible = true
+end)
+
+ImageButton.MouseButton1Click:Connect(function()
+    MinimizedFrame.Visible = false
+    MainFrame.Visible = true
+end)
+
+-- Drag Functions (Mobile)
+local function enableMobileDrag(frame)
+    local dragToggle, dragStart, dragPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true
+            dragStart = input.Position
+            dragPos = frame.Position
+        end
     end)
-    if not success then
-        print("Error executing script: " .. err)
-    end
-end)
 
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
+    frame.InputChanged:Connect(function(input)
+        if dragToggle and input.UserInputType == Enum.UserInputType.Touch then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+        end
+    end)
 
-CopyButton.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard(TextBox.Text)
-    else
-        print("Clipboard not supported.")
-    end
-end)
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = false
+        end
+    end)
+end
+
+-- Apply drag to MainFrame and MinimizedFrame
+enableMobileDrag(MainFrame)
+enableMobileDrag(MinimizedFrame)
