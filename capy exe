@@ -1,7 +1,7 @@
 --[[
 
         Capy Executor
-        By Capy
+        By ChatGPT
         Version 2.0.0
 
 ]]--
@@ -182,29 +182,25 @@ ImageButton.MouseButton1Click:Connect(function()
 end)
 
 -- Chức năng kéo cho MinimizedFrame (cả trên điện thoại và máy tính)
-local function enableDrag(frame)
-    local dragToggle, dragStart, dragPos
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = true
-            dragStart = input.Position
-            dragPos = frame.Position
-        end
-    end)
+local dragToggle, dragStart, dragPos
 
-    frame.InputChanged:Connect(function(input)
-        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
-        end
-    end)
+MinimizedFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        dragPos = MinimizedFrame.Position
+    end
+end)
 
-    frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = false
-        end
-    end)
-end
+MinimizedFrame.InputChanged:Connect(function(input)
+    if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        MinimizedFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+    end
+end)
 
--- Kích hoạt kéo cho MinimizedFrame
-enableDrag(MinimizedFrame)
+MinimizedFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = false
+    end
+end)
