@@ -98,7 +98,7 @@ TextBox.Font = Enum.Font.Code
 TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
-TextBox.ClearTextOnFocus = false
+TextBox.ClearTextOnFocus = false  -- Không xóa khi click vào
 TextBox.MultiLine = true
 TextBox.TextWrapped = false -- Cho phép kéo ngang
 TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
@@ -187,7 +187,7 @@ local function enableDrag(frame)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local delta = input.Position - dragStart
             frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
         end
