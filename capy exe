@@ -1,4 +1,4 @@
---[[
+--[[ 
     Capy Executor
     By ChatGPT
     Version 2.0.0
@@ -150,7 +150,7 @@ ImageButton.Image = "rbxassetid://12345678"
 ToggleButton.Parent = MinimizedFrame
 ToggleButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 ToggleButton.Size = UDim2.new(0, 60, 0, 60)
-ToggleButton.Text = "Toogle
+ToggleButton.Text = "+"
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.Font = Enum.Font.SourceSans
 ToggleButton.TextSize = 18
