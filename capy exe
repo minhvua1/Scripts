@@ -2,7 +2,7 @@
 
         Capy Executor
         By ChatGPT
-        Version 2.0.0
+        Version 2.0.1
 
 ]]--
 
@@ -31,18 +31,17 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Xám tối
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 600, 0, 350)
 MainFrame.Active = true
 MainFrame.Visible = true
-MainFrame.ClipsDescendants = true
 
 -- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Xám đậm hơn
+Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
 Upper.BorderSizePixel = 0
 Upper.Size = UDim2.new(1, 0, 0, 25)
 
@@ -51,8 +50,8 @@ TitleLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 TitleLabel.BorderSizePixel = 0
 TitleLabel.Size = UDim2.new(0, 100, 0, 25)
 TitleLabel.Font = Enum.Font.SourceSans
-TitleLabel.Text = "Capy"
-TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230) -- Chữ màu trắng xám
+TitleLabel.Text = "Capy Executor"
+TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
 TitleLabel.TextSize = 18
 TitleLabel.TextWrapped = false
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -95,14 +94,11 @@ TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0, 35, 0, 0)
 TextBox.Size = UDim2.new(1, -35, 1, 0)
 TextBox.Font = Enum.Font.Code
-TextBox.Text = "print(\"hello world\")"
+TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextWrapped = false
-TextBox.TextXAlignment = Enum.TextXAlignment.Left
-TextBox.TextYAlignment = Enum.TextYAlignment.Top
 
 -- Down Bar
 Down.Name = "Down"
@@ -147,24 +143,22 @@ MinimizedFrame.BorderSizePixel = 0
 MinimizedFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
 MinimizedFrame.Size = UDim2.new(0, 60, 0, 60)
 MinimizedFrame.Visible = false
-MinimizedFrame.Active = true
 
 ImageButton.Parent = MinimizedFrame
 ImageButton.BackgroundTransparency = 1
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
-ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
+ImageButton.Image = "rbxassetid://12345678" -- ID của ảnh
 
--- Drag Function
+-- Dragging Function
 local function enableDrag(frame)
-    local dragging = false
-    local dragInput, dragStart, startPos
+    local UIS = game:GetService("UserInputService")
+    local dragging, dragStart, startPos
 
     frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = frame.Position
-
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
@@ -175,19 +169,14 @@ local function enableDrag(frame)
 
     frame.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
+            UIS.InputChanged:Connect(function(delta)
+                if dragging then
+                    frame.Position = UDim2.new(
+                        startPos.X.Scale, startPos.X.Offset + delta.Position.X - dragStart.X,
+                        startPos.Y.Scale, startPos.Y.Offset + delta.Position.Y - dragStart.Y
+                    )
+                end
+            end)
         end
     end)
 end
