@@ -94,12 +94,14 @@ TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0, 35, 0, 0)
 TextBox.Size = UDim2.new(1, -35, 1, 0)
 TextBox.Font = Enum.Font.Code
-TextBox.Text = "print(\"hello world\")"
+TextBox.Text = "-- print(\"hello world\")"
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextWrapped = true -- Cho phép kéo ngang
+TextBox.TextWrapped = false -- Cho phép kéo ngang
+TextBox.TextXAlignment = Enum.TextXAlignment.Left -- Chỉnh sửa để văn bản nằm ở góc trái
+TextBox.TextYAlignment = Enum.TextYAlignment.Top -- Đảm bảo văn bản bắt đầu từ trên cùng
 
 -- Down Bar
 Down.Name = "Down"
@@ -191,32 +193,3 @@ local function enableDrag(frame)
     end)
 
     frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragToggle = false
-        end
-    end)
-end
-
-enableDrag(MainFrame)
-enableDrag(MinimizedFrame)
-
-ExecuteButton.MouseButton1Click:Connect(function()
-    local success, err = pcall(function()
-        loadstring(TextBox.Text)()
-    end)
-    if not success then
-        print("Error executing script: " .. err)
-    end
-end)
-
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
-
-CopyButton.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard(TextBox.Text)
-    else
-        print("Clipboard not supported.")
-    end
-end)
