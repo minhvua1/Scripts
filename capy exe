@@ -1,10 +1,4 @@
---[[
 
-        Capy Editor
-        By ChatGPT
-        Version 1.3.0
-
-]]
 
 -- Instances
 
@@ -31,116 +25,113 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Xám tối
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
 MainFrame.Active = true
 MainFrame.Visible = true
+MainFrame.ClipsDescendants = true
 
 -- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+Upper.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Upper.BorderSizePixel = 0
-Upper.Size = UDim2.new(0, 400, 0, 20)
+Upper.Size = UDim2.new(1, 0, 0, 25)
 
 TextLabel.Parent = Upper
 TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 TextLabel.BorderSizePixel = 0
-TextLabel.Size = UDim2.new(0, 60, 0, 20)
+TextLabel.Size = UDim2.new(0, 100, 0, 25)
 TextLabel.Font = Enum.Font.SourceSans
 TextLabel.Text = "Capy"
-TextLabel.TextColor3 = Color3.new(0, 0, 0)
-TextLabel.TextScaled = true
-TextLabel.TextSize = 20
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 18
 TextLabel.TextWrapped = true
 TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-TextLabel.TextYAlignment = Enum.TextYAlignment.Top
 
 MinimizeButton.Parent = Upper
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 MinimizeButton.BorderSizePixel = 0
-MinimizeButton.Position = UDim2.new(0.9, -20, 0, 0)
-MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
+MinimizeButton.Position = UDim2.new(0.95, -20, 0, 0)
+MinimizeButton.Size = UDim2.new(0, 20, 0, 25)
 MinimizeButton.Font = Enum.Font.SourceSans
 MinimizeButton.Text = "-"
-MinimizeButton.TextColor3 = Color3.new(0, 0, 0)
-MinimizeButton.TextSize = 14
+MinimizeButton.TextColor3 = Color3.new(1, 1, 1)
+MinimizeButton.TextSize = 18
 
 -- Scrolling Frame
 ScrollingFrame.Parent = MainFrame
-ScrollingFrame.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ScrollingFrame.BorderSizePixel = 0
-ScrollingFrame.Position = UDim2.new(0, 0, 0.067, 0)
-ScrollingFrame.Size = UDim2.new(0, 400, 0, 240)
+ScrollingFrame.Position = UDim2.new(0, 0, 0.083, 0)
+ScrollingFrame.Size = UDim2.new(1, 0, 0.75, 0)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-ScrollingFrame.ScrollBarThickness = 6
+ScrollingFrame.ScrollBarThickness = 8
 
 LineNumbers.Name = "LineNumbers"
 LineNumbers.Parent = ScrollingFrame
-LineNumbers.BackgroundColor3 = Color3.fromRGB(169, 169, 169)
+LineNumbers.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 LineNumbers.BorderSizePixel = 0
-LineNumbers.Size = UDim2.new(0, 25, 1, 0)
+LineNumbers.Size = UDim2.new(0, 30, 1, 0)
 LineNumbers.Font = Enum.Font.SourceSans
 LineNumbers.Text = "1"
-LineNumbers.TextColor3 = Color3.new(0, 0, 0)
-LineNumbers.TextSize = 12
+LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
+LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
-LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
-TextBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
+TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 TextBox.BorderSizePixel = 0
-TextBox.Position = UDim2.new(0, 30, 0, 0)
+TextBox.Position = UDim2.new(0, 35, 0, 0)
 TextBox.Size = UDim2.new(1, -35, 1, 0)
 TextBox.Font = Enum.Font.SourceSans
 TextBox.Text = "-- print(\"hello world\")"
-TextBox.TextColor3 = Color3.new(0, 0, 0)
-TextBox.TextSize = 12
-TextBox.TextWrapped = true -- Auto-wrap text
-TextBox.TextXAlignment = Enum.TextXAlignment.Left
-TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextSize = 14
+TextBox.TextWrapped = true
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
 
 -- Down Bar
 Down.Name = "Down"
 Down.Parent = MainFrame
-Down.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
-Down.Position = UDim2.new(0, 0, 0.9, 0)
-Down.Size = UDim2.new(0, 400, 0, 30)
+Down.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+Down.Position = UDim2.new(0, 0, 0.85, 0)
+Down.Size = UDim2.new(1, 0, 0.15, 0)
 
 ExecuteButton.Parent = Down
-ExecuteButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
+ExecuteButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 ExecuteButton.Size = UDim2.new(0, 80, 0, 25)
+ExecuteButton.Position = UDim2.new(0.05, 0, 0.5, -12.5)
 ExecuteButton.Font = Enum.Font.SourceSans
 ExecuteButton.Text = "Execute"
-ExecuteButton.TextColor3 = Color3.new(1, 1, 1)
+ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ExecuteButton.TextSize = 14
 
 ClearButton.Parent = Down
-ClearButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
-ClearButton.Position = UDim2.new(0.25, 0, 0, 0)
+ClearButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 ClearButton.Size = UDim2.new(0, 80, 0, 25)
+ClearButton.Position = UDim2.new(0.35, 0, 0.5, -12.5)
 ClearButton.Font = Enum.Font.SourceSans
 ClearButton.Text = "Clear"
-ClearButton.TextColor3 = Color3.new(1, 1, 1)
+ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ClearButton.TextSize = 14
 
 CopyButton.Parent = Down
-CopyButton.BackgroundColor3 = Color3.fromRGB(107, 107, 107)
-CopyButton.Position = UDim2.new(0.5, 0, 0, 0)
+CopyButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 CopyButton.Size = UDim2.new(0, 80, 0, 25)
+CopyButton.Position = UDim2.new(0.65, 0, 0.5, -12.5)
 CopyButton.Font = Enum.Font.SourceSans
 CopyButton.Text = "Copy"
-CopyButton.TextColor3 = Color3.new(1, 1, 1)
+CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CopyButton.TextSize = 14
 
 -- Minimized Frame
 MinimizedFrame.Name = "MinimizedFrame"
 MinimizedFrame.Parent = ScreenGui
-MinimizedFrame.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+MinimizedFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 MinimizedFrame.BorderSizePixel = 0
 MinimizedFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
 MinimizedFrame.Size = UDim2.new(0, 50, 0, 50)
@@ -148,7 +139,6 @@ MinimizedFrame.Visible = false
 MinimizedFrame.Active = true
 
 ImageButton.Parent = MinimizedFrame
-ImageButton.BackgroundColor3 = Color3.new(1, 1, 1)
 ImageButton.BackgroundTransparency = 1
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
 ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
@@ -161,12 +151,10 @@ local function updateLineNumbers()
     for i = 1, #lines do
         LineNumbers.Text = LineNumbers.Text .. tostring(i) .. "\n"
     end
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 18)
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #lines * 20)
 end
 
-TextBox:GetPropertyChangedSignal("Text"):Connect(function()
-    updateLineNumbers()
-end)
+TextBox:GetPropertyChangedSignal("Text"):Connect(updateLineNumbers)
 
 MinimizeButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
@@ -178,48 +166,29 @@ ImageButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
-local dragToggle, dragStart, dragPos
-Upper.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = true
-        dragStart = input.Position
-        dragPos = MainFrame.Position
-    end
-end)
+local function enableDrag(frame)
+    local dragToggle, dragStart, dragPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true
+            dragStart = input.Position
+            dragPos = frame.Position
+        end
+    end)
 
-Upper.InputChanged:Connect(function(input)
-    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        local delta = input.Position - dragStart
-        MainFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
-    end
-end)
+    frame.InputChanged:Connect(function(input)
+        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+        end
+    end)
 
-Upper.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = false
-    end
-end)
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = false
+        end
+    end)
+end
 
-MinimizedFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = true
-        dragStart = input.Position
-        dragPos = MinimizedFrame.Position
-    end
-end)
-
-MinimizedFrame.InputChanged:Connect(function(input)
-    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        local delta = input.Position - dragStart
-        MinimizedFrame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
-    end
-end)
-
-MinimizedFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragToggle = false
-    end
-end)
-
--- Initialize
-updateLineNumbers()
+enableDrag(MainFrame)
+enableDrag(MinimizedFrame)
