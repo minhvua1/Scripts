@@ -54,7 +54,7 @@ TitleLabel.Font = Enum.Font.SourceSans
 TitleLabel.Text = "Capy"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.TextSize = 18
-TitleLabel.TextWrapped = true
+TitleLabel.TextWrapped = false
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 MinimizeButton.Parent = Upper
@@ -87,6 +87,7 @@ LineNumbers.Text = "1"
 LineNumbers.TextColor3 = Color3.fromRGB(200, 200, 200)
 LineNumbers.TextSize = 14
 LineNumbers.TextXAlignment = Enum.TextXAlignment.Right
+LineNumbers.TextYAlignment = Enum.TextYAlignment.Top
 
 TextBox.Parent = ScrollingFrame
 TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -100,6 +101,8 @@ TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
 TextBox.TextWrapped = false -- Cho phép kéo ngang
+TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
+TextBox.TextYAlignment = Enum.TextYAlignment.Top   -- Căn trên
 
 -- Down Bar
 Down.Name = "Down"
