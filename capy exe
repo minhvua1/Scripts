@@ -2,7 +2,7 @@
 
         Capy Executor
         By ChatGPT
-        Version 3.0.0
+        Version 4.0.0
 
 ]]--
 
@@ -12,7 +12,6 @@ local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
 local TitleLabel = Instance.new("TextLabel")
-local MinimizeButton = Instance.new("TextButton")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local LineNumbers = Instance.new("TextLabel")
 local TextBox = Instance.new("TextBox")
@@ -20,7 +19,7 @@ local Down = Instance.new("Frame")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local CopyButton = Instance.new("TextButton")
-local ToggleButton = Instance.new("TextButton") -- Nút mới
+local FloatingButton = Instance.new("TextButton") -- Nút mới
 
 -- Properties
 
@@ -30,12 +29,12 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Xám tối
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 600, 0, 350)
 MainFrame.Active = true
-MainFrame.Visible = true
+MainFrame.Visible = false -- Mặc định ẩn
 MainFrame.ClipsDescendants = true
 
 -- Upper Bar
@@ -50,20 +49,10 @@ TitleLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 TitleLabel.BorderSizePixel = 0
 TitleLabel.Size = UDim2.new(0, 100, 0, 25)
 TitleLabel.Font = Enum.Font.SourceSans
-TitleLabel.Text = "Capy"
+TitleLabel.Text = "Capy Executor"
 TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
 TitleLabel.TextSize = 18
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-MinimizeButton.Parent = Upper
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-MinimizeButton.BorderSizePixel = 0
-MinimizeButton.Position = UDim2.new(0.95, -20, 0, 0)
-MinimizeButton.Size = UDim2.new(0, 20, 0, 25)
-MinimizeButton.Font = Enum.Font.SourceSans
-MinimizeButton.Text = "-"
-MinimizeButton.TextColor3 = Color3.new(1, 1, 1)
-MinimizeButton.TextSize = 18
 
 -- Scrolling Frame
 ScrollingFrame.Parent = MainFrame
@@ -132,17 +121,17 @@ CopyButton.Text = "Copy"
 CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CopyButton.TextSize = 14
 
--- Toggle Button
-ToggleButton.Parent = ScreenGui
-ToggleButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-ToggleButton.BorderSizePixel = 0
-ToggleButton.Position = UDim2.new(0.05, 0, 0.1, 0)
-ToggleButton.Size = UDim2.new(0, 80, 0, 30)
-ToggleButton.Font = Enum.Font.SourceSans
-ToggleButton.Text = "Show/Hide"
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.TextSize = 14
-ToggleButton.Active = true
+-- Floating Button
+FloatingButton.Parent = ScreenGui
+FloatingButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+FloatingButton.BorderSizePixel = 0
+FloatingButton.Position = UDim2.new(0.05, 0, 0.1, 0)
+FloatingButton.Size = UDim2.new(0, 100, 0, 40)
+FloatingButton.Font = Enum.Font.SourceSans
+FloatingButton.Text = "Toggle Capy"
+FloatingButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FloatingButton.TextSize = 14
+FloatingButton.Active = true
 
 -- Drag Functions
 local function enableDrag(frame)
@@ -171,12 +160,12 @@ local function enableDrag(frame)
     end)
 end
 
--- Enable dragging for MainFrame and ToggleButton
+-- Enable dragging for MainFrame and FloatingButton
 enableDrag(MainFrame)
-enableDrag(ToggleButton)
+enableDrag(FloatingButton)
 
 -- Toggle visibility of MainFrame
-ToggleButton.MouseButton1Click:Connect(function()
+FloatingButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)
 
