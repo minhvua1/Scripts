@@ -1,4 +1,13 @@
+--[[
+
+        Capy Executor
+        By ChatGPT
+        Version 2.0.0
+
+]]--
+
 -- Instances
+
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local Upper = Instance.new("Frame")
@@ -15,13 +24,14 @@ local MinimizedFrame = Instance.new("Frame")
 local ImageButton = Instance.new("ImageButton")
 
 -- Properties
+
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 -- Main Frame
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Xám tối
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
 MainFrame.Size = UDim2.new(0, 600, 0, 350)
@@ -32,7 +42,7 @@ MainFrame.ClipsDescendants = true
 -- Upper Bar
 Upper.Name = "Upper"
 Upper.Parent = MainFrame
-Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+Upper.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Xám đậm hơn
 Upper.BorderSizePixel = 0
 Upper.Size = UDim2.new(1, 0, 0, 25)
 
@@ -42,7 +52,7 @@ TitleLabel.BorderSizePixel = 0
 TitleLabel.Size = UDim2.new(0, 100, 0, 25)
 TitleLabel.Font = Enum.Font.SourceSans
 TitleLabel.Text = "Capy"
-TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
+TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230) -- Chữ màu trắng xám
 TitleLabel.TextSize = 18
 TitleLabel.TextWrapped = false
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -90,9 +100,9 @@ TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.MultiLine = true
-TextBox.TextWrapped = false
-TextBox.TextXAlignment = Enum.TextXAlignment.Left
-TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.TextWrapped = false -- Cho phép kéo ngang
+TextBox.TextXAlignment = Enum.TextXAlignment.Left  -- Căn trái
+TextBox.TextYAlignment = Enum.TextYAlignment.Top   -- Căn trên
 
 -- Down Bar
 Down.Name = "Down"
@@ -142,7 +152,7 @@ MinimizedFrame.Active = true
 ImageButton.Parent = MinimizedFrame
 ImageButton.BackgroundTransparency = 1
 ImageButton.Size = UDim2.new(1, 0, 1, 0)
-ImageButton.Image = "rbxassetid://12345678"
+ImageButton.Image = "rbxassetid://12345678" -- Thay bằng ID ảnh Roblox
 
 -- Functions
 local function updateLineNumbers()
@@ -166,8 +176,8 @@ ImageButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
--- Drag Functions for Capy Executor and MinimizedFrame
-local function enableDrag(frame)
+-- Drag Functions for MinimizedFrame
+local function enableDragForMinimizedFrame(frame)
     local dragToggle, dragStart, dragPos
     frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -176,7 +186,7 @@ local function enableDrag(frame)
             dragPos = frame.Position
         end
     end)
-    
+
     frame.InputChanged:Connect(function(input)
         if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local delta = input.Position - dragStart
@@ -191,19 +201,5 @@ local function enableDrag(frame)
     end)
 end
 
-enableDrag(MainFrame)
-enableDrag(MinimizedFrame)
-
--- Button click events
-ExecuteButton.MouseButton1Click:Connect(function()
-    -- Execute Script logic here
-end)
-
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
-
-CopyButton.MouseButton1Click:Connect(function()
-    setclipboard(TextBox.Text)
-end)
-
+-- Enable drag for MinimizedFrame
+enableDragForMinimizedFrame(MinimizedFrame)
