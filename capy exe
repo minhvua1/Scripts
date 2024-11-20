@@ -123,6 +123,7 @@ local function updateScrollingFrameSize()
         local width = TextBox.TextBounds.X
         maxWidth = math.max(maxWidth, width)
     end
+    -- Cập nhật lại CanvasSize cho thanh cuộn ngang
     ScrollingFrame.CanvasSize = UDim2.new(0, maxWidth + 35, 0, #lines * 20)
 end
 
@@ -193,7 +194,10 @@ end)
 
 -- Drag Functions
 local function enableDrag(frame)
-    local dragToggle, dragStart, dragPos
+    local dragToggle = false
+    local dragStart = Vector3.new()
+    local dragPos = frame.Position
+
     frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragToggle = true
