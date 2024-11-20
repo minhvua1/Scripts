@@ -3,7 +3,7 @@
         Capy Executor
         Mobile Dragable Fix
         By ChatGPT
-        Version 5.1.0
+        Version 5.2.0
 
 ]]--
 
@@ -177,31 +177,43 @@ ImageButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
--- Drag Functions (Mobile)
-local function enableMobileDrag(frame)
+-- Drag Functions for MinimizedFrame only
+local function enableDrag(frame)
     local dragToggle, dragStart, dragPos
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragToggle = true
             dragStart = input.Position
             dragPos = frame.Position
         end
     end)
-
+    
     frame.InputChanged:Connect(function(input)
-        if dragToggle and input.UserInputType == Enum.UserInputType.Touch then
+        if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local delta = input.Position - dragStart
-            frame.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+            frame.Position = UDim2.new(dragPos.X.Scale, delta.X, dragPos.Y.Scale, delta.Y)
         end
     end)
 
     frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragToggle = false
         end
     end)
 end
 
--- Apply drag to MainFrame and MinimizedFrame
-enableMobileDrag(MainFrame)
-enableMobileDrag(MinimizedFrame)
+-- Enable drag for MinimizedFrame
+enableDrag(MinimizedFrame)
+
+-- Button click events (execute, clear, copy)
+ExecuteButton.MouseButton1Click:Connect(function()
+    -- Execute Script here
+end)
+
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(TextBox.Text)
+end)
