@@ -5,29 +5,25 @@ local Stats = game:GetService("Stats")
 _G.ShowPingFPS = true -- Mặc định tắt
 
 local ScreenGui = Instance.new("ScreenGui")
-local TextLabel = Instance.new("TextLabel")
-
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Tạo TextLabel một lần duy nhất
+local TextLabel = Instance.new("TextLabel")
 TextLabel.Parent = ScreenGui
 TextLabel.Size = UDim2.new(0, 200, 0, 50)
 TextLabel.Position = UDim2.new(1, -210, 0, 10)
 TextLabel.BackgroundTransparency = 1
-TextLabel.TextColor3 = Color3.new(0, 1, 0)
+TextLabel.TextColor3 = Color3.new(0, 1, 0) -- Màu xanh lá
 TextLabel.Font = Enum.Font.SourceSans
 TextLabel.TextSize = 24
 TextLabel.Text = ""
 TextLabel.Visible = true -- Mặc định ẩn
 
--- Hàm Toggle trong _G
-_G.TogglePingFPS = function()
-    _G.ShowPingFPS = not _G.ShowPingFPS -- Đảo trạng thái bật/tắt
-    print("Ping/FPS hiện tại: ", _G.ShowPingFPS and "Bật" or "Tắt")
-end
-
--- Cập nhật GUI
+-- Cập nhật GUI khi _G.ShowPingFPS thay đổi
 local lastUpdate = 0
 RunService.RenderStepped:Connect(function(deltaTime)
     if _G.ShowPingFPS then
+        -- Lấy Ping và FPS mỗi 0.5 giây
         if tick() - lastUpdate >= 0.5 then
             local rawPing = Stats.Network.ServerStatsItem["Data Ping"]:GetValueString()
             local ping = tonumber(string.match(rawPing, "%d+")) or 0
@@ -35,8 +31,8 @@ RunService.RenderStepped:Connect(function(deltaTime)
             TextLabel.Text = string.format("Ping: %dms\nFPS: %d", ping, fps)
             lastUpdate = tick()
         end
-        TextLabel.Visible = true
+        TextLabel.Visible = true -- Hiển thị TextLabel khi bật
     else
-        TextLabel.Visible = false
+        TextLabel.Visible = false -- Ẩn TextLabel khi tắt
     end
 end)
