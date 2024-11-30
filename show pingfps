@@ -26,6 +26,7 @@ RunService.RenderStepped:Connect(function(deltaTime)
             TextLabel.Font = Enum.Font.SourceSans
             TextLabel.TextSize = 24
             TextLabel.Text = ""
+            TextLabel.Visible = true -- Hiển thị TextLabel ngay khi tạo
         end
 
         -- Lấy Ping và FPS mỗi 0.5 giây
@@ -39,10 +40,9 @@ RunService.RenderStepped:Connect(function(deltaTime)
 
         TextLabel.Visible = true -- Hiển thị TextLabel khi bật
     else
-        -- Nếu _G.ShowPingFPS là false, xóa TextLabel
+        -- Nếu _G.ShowPingFPS là false, ẩn TextLabel
         if TextLabel then
-            TextLabel:Destroy() -- Xóa TextLabel khi tắt
-            TextLabel = nil -- Đặt lại TextLabel về nil để tránh tạo lại nhiều lần
+            TextLabel.Visible = false -- Ẩn TextLabel mà không xóa nó
         end
     end
 end)
