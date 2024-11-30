@@ -15,10 +15,10 @@ TextLabel.TextColor3 = Color3.new(0, 1, 0) -- Màu xanh lá
 TextLabel.Font = Enum.Font.SourceSans
 TextLabel.TextSize = 24
 TextLabel.Text = ""
-TextLabel.Visible = false -- Mặc định tắt hiển thị
+TextLabel.Visible = true -- Mặc định tắt hiển thị
 
 -- Biến _G để bật/tắt
-_G.ShowPingFPS = false
+_G.ShowPingFPS = true
 
 -- Hàm cập nhật Ping và FPS
 local lastUpdate = 0
