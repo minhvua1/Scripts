@@ -1,48 +1,64 @@
-local RunService = game:GetService("RunService")
-local Stats = game:GetService("Stats")
+-- Tạo biến _G để bật/tắt
+_G.DisplayFPSPing = not _G.DisplayFPSPing -- Tự động bật/tắt khi execute lại
 
--- Định nghĩa _G
-_G.ShowPingFPS = true -- Mặc định tắt
-
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
--- Biến để lưu TextLabel
-local TextLabel
-
--- Cập nhật GUI khi _G.ShowPingFPS thay đổi
-local lastUpdate = 0
-RunService.RenderStepped:Connect(function(deltaTime)
-    if _G.ShowPingFPS then
-        -- Nếu TextLabel chưa tồn tại, tạo mới
-        if not TextLabel then
-            -- Tạo TextLabel một lần duy nhất
-            TextLabel = Instance.new("TextLabel")
-            TextLabel.Parent = ScreenGui
-            TextLabel.Size = UDim2.new(0, 200, 0, 50)
-            TextLabel.Position = UDim2.new(1, -210, 0, 10)
-            TextLabel.BackgroundTransparency = 1
-            TextLabel.TextColor3 = Color3.new(0, 1, 0) -- Màu xanh lá
-            TextLabel.Font = Enum.Font.SourceSans
-            TextLabel.TextSize = 24
-            TextLabel.Text = ""
-            TextLabel.Visible = true -- Hiển thị TextLabel ngay khi tạo
+-- Nếu _G.DisplayFPSPing bị tắt, xóa khung hiển thị và dừng script
+if not _G.DisplayFPSPing then
+    for _, v in pairs(game.CoreGui:GetChildren()) do
+        if v.Name == "FPSPingDisplay" then
+            v:Destroy()
         end
+    end
+    return -- Ngừng script
+end
 
-        -- Lấy Ping và FPS mỗi 0.5 giây
-        if tick() - lastUpdate >= 0.5 then
-            local rawPing = Stats.Network.ServerStatsItem["Data Ping"]:GetValueString()
-            local ping = tonumber(string.match(rawPing, "%d+")) or 0
-            local fps = math.floor(1 / deltaTime)
-            TextLabel.Text = string.format("Ping: %dms\nFPS: %d", ping, fps)
-            lastUpdate = tick()
-        end
+-- Xóa các khung hiển thị cũ nếu tồn tại
+for _, v in pairs(game.CoreGui:GetChildren()) do
+    if v.Name == "FPSPingDisplay" then
+        v:Destroy()
+    end
+end
 
-        TextLabel.Visible = true -- Hiển thị TextLabel khi bật
-    else
-        -- Nếu _G.ShowPingFPS là false, ẩn TextLabel
-        if TextLabel then
-            TextLabel.Visible = false -- Ẩn TextLabel mà không xóa nó
-        end
+-- Tạo khung chính để chứa FPS và Ping
+local frame = Instance.new("ScreenGui")
+frame.Name = "FPSPingDisplay"
+frame.Parent = game.CoreGui
+
+-- Tạo nhãn hiển thị FPS
+local fpsDisplay = Instance.new("TextLabel")
+fpsDisplay.Name = "FPSDisplay"
+fpsDisplay.Parent = frame
+fpsDisplay.Size = UDim2.new(0, 100, 0, 20) -- Kích thước nhỏ hơn
+fpsDisplay.Position = UDim2.new(0.8, 0, 0, 10) -- Dịch vào bên trái và xuống một chút
+fpsDisplay.BackgroundTransparency = 1
+fpsDisplay.TextColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh lá
+fpsDisplay.TextScaled = true
+fpsDisplay.Font = Enum.Font.Code
+fpsDisplay.Text = "FPS: Calculating..."
+
+-- Tạo nhãn hiển thị Ping
+local pingDisplay = Instance.new("TextLabel")
+pingDisplay.Name = "PingDisplay"
+pingDisplay.Parent = frame
+pingDisplay.Size = UDim2.new(0, 100, 0, 20) -- Kích thước nhỏ hơn
+pingDisplay.Position = UDim2.new(0.8, 0, 0, 35) -- Ngay dưới FPS, cách khoảng 25px
+pingDisplay.BackgroundTransparency = 1
+pingDisplay.TextColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh lá
+pingDisplay.TextScaled = true
+pingDisplay.Font = Enum.Font.Code
+pingDisplay.Text = "Ping: Calculating..."
+
+-- Hàm cập nhật FPS mỗi 0.5 giây
+spawn(function()
+    while _G.DisplayFPSPing and wait(0.5) do
+        local fps = math.floor(workspace:GetRealPhysicsFPS()) -- Lấy FPS thực tế
+        fpsDisplay.Text = "FPS: " .. fps
+    end
+end)
+
+-- Hàm cập nhật Ping mỗi 0.5 giây
+spawn(function()
+    while _G.DisplayFPSPing and wait(0.5) do
+        local ping = math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()) -- Lấy giá trị Ping
+        pingDisplay.Text = "Ping: " .. ping .. "ms"
     end
 end)
