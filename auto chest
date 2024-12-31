@@ -57,6 +57,81 @@ toggleButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Nút để đổi server
+local serverButton = Instance.new("TextButton")
+serverButton.Size = UDim2.new(0, 150, 0, 40)
+serverButton.Position = UDim2.new(0.5, 300, 0, 10)
+serverButton.BackgroundColor3 = Color3.new(0, 0, 1)
+serverButton.TextColor3 = Color3.new(1, 1, 1)
+serverButton.TextScaled = true
+serverButton.Text = "Đổi Server"
+serverButton.Parent = uiContainer
+
+-- Bảng xác nhận đổi server
+local confirmationFrame = Instance.new("Frame")
+confirmationFrame.Size = UDim2.new(0, 400, 0, 200)
+confirmationFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
+confirmationFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+confirmationFrame.Visible = false
+confirmationFrame.Parent = gui
+
+local confirmationLabel = Instance.new("TextLabel")
+confirmationLabel.Size = UDim2.new(1, 0, 0.6, 0)
+confirmationLabel.Position = UDim2.new(0, 0, 0, 0)
+confirmationLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+confirmationLabel.TextColor3 = Color3.new(1, 1, 1)
+confirmationLabel.TextScaled = true
+confirmationLabel.Text = "Bạn chắc chắn muốn đổi server chưa? hãy kiểm tra inventory thật kỹ!"
+confirmationLabel.Parent = confirmationFrame
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+closeButton.Position = UDim2.new(0.05, 0, 0.7, 0)
+closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+closeButton.TextScaled = true
+closeButton.Text = "Hủy"
+closeButton.Parent = confirmationFrame
+
+local confirmButton = Instance.new("TextButton")
+confirmButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+confirmButton.Position = UDim2.new(0.55, 0, 0.7, 0)
+confirmButton.BackgroundColor3 = Color3.new(0, 1, 0)
+confirmButton.TextColor3 = Color3.new(1, 1, 1)
+confirmButton.TextScaled = true
+confirmButton.Text = "Đổi Server"
+confirmButton.Parent = confirmationFrame
+
+serverButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = true
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = false
+end)
+
+confirmButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = false
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+    local _place = game.PlaceId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    
+    function ListServers(cursor)
+        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+        return Http:JSONDecode(Raw)
+    end
+    
+    local Server, Next; repeat
+        local Servers = ListServers(Next)
+        Server = Servers.data[1]
+        Next = Servers.nextPageCursor
+    until Server
+    
+    TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
+end)
+
 -- Nút chính để ẩn/hiện giao diện
 local toggleUIButton = Instance.new("TextButton")
 toggleUIButton.Size = UDim2.new(0, 50, 0, 50)
@@ -67,7 +142,6 @@ toggleUIButton.TextScaled = true
 toggleUIButton.Text = "-"
 toggleUIButton.Parent = gui
 
--- Chức năng ẩn/hiện UI chính
 local isVisible = true
 toggleUIButton.MouseButton1Click:Connect(function()
     isVisible = not isVisible
@@ -104,66 +178,3 @@ toggleUIButton.InputEnded:Connect(function(input)
         dragging = false
     end
 end)
-
--- Giữ lại các hàm và logic chính của script
--- Hàm lấy thông tin nhân vật
-local function getCharacter()
-    if not LocalPlayer.Character then
-        LocalPlayer.CharacterAdded:Wait()
-    end
-    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-    return LocalPlayer.Character
-end
-
--- Hàm lấy danh sách rương, sắp xếp theo khoảng cách
-local function getChestsSorted()
-    if FirstRun then
-        FirstRun = false
-        for _, Object in pairs(workspace:GetDescendants()) do
-            if Object.Name:find("Chest") and Object:IsA("Part") then
-                table.insert(UncheckedChests, Object)
-            end
-        end
-    end
-    local Chests = {}
-    for _, Chest in pairs(UncheckedChests) do
-        if Chest:FindFirstChild("TouchInterest") then
-            table.insert(Chests, Chest)
-        end
-    end
-    table.sort(Chests, function(ChestA, ChestB)
-        local RootPos = getCharacter().HumanoidRootPart.Position
-        return (RootPos - ChestA.Position).Magnitude < (RootPos - ChestB.Position).Magnitude
-    end)
-    return Chests
-end
-
--- Hàm di chuyển đến rương
-local function TeleportToChest(Chest)
-    local RootPart = getCharacter().HumanoidRootPart
-    local distance = (RootPart.Position - Chest.Position).Magnitude
-    while distance > 1 and collectChests do
-        local Direction = (Chest.Position - RootPart.Position).Unit
-        RootPart.CFrame = RootPart.CFrame + Direction * (MaxSpeed * wait())
-        distance = (RootPart.Position - Chest.Position).Magnitude
-    end
-end
-
--- Hàm chính
-local function main()
-    while true do
-        local Chests = getChestsSorted()
-        chestsLabel.Text = "Số rương: " .. #Chests
-
-        if #Chests > 0 and collectChests then
-            TeleportToChest(Chests[1])
-            wait(4) -- Tạm dừng sau khi lượm rương
-        elseif #Chests == 0 then
-            break -- Ngưng lượm rương nếu không còn rương
-        else
-            wait(1)
-        end
-    end
-end
-
-main()
