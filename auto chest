@@ -3,6 +3,9 @@ local LocalPlayer = game:GetService("Players").LocalPlayer
 local UncheckedChests = {}
 local FirstRun = true
 local wait = task.wait
+local httpService = game:GetService("HttpService")
+local teleportService = game:GetService("TeleportService")
+local currentGame = game.PlaceId
 
 -- Tạo ScreenGui
 local gui = Instance.new("ScreenGui")
@@ -16,16 +19,20 @@ local uiContainer = Instance.new("Frame")
 uiContainer.Size = UDim2.new(1, 0, 0, 60) -- Chiều cao tối đa 60
 uiContainer.Position = UDim2.new(0, 0, 0, 10) -- Gần trên cùng
 uiContainer.BackgroundTransparency = 1
+uiContainer.Active = true
+uiContainer.Draggable = true
 uiContainer.Parent = gui
 
 -- Nút bật/tắt UI
 local toggleUIButton = Instance.new("TextButton")
-toggleUIButton.Size = UDim2.new(0, 150, 0, 40)
+toggleUIButton.Size = UDim2.new(0, 40, 0, 40)
 toggleUIButton.Position = UDim2.new(0, 10, 0, 10)
 toggleUIButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
 toggleUIButton.TextScaled = true
 toggleUIButton.Text = "-"
+toggleUIButton.Active = true
+toggleUIButton.Draggable = true
 toggleUIButton.Parent = gui
 
 toggleUIButton.MouseButton1Click:Connect(function()
@@ -67,19 +74,19 @@ creditLabel.Parent = uiContainer
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = buttonSize
 toggleButton.Position = UDim2.new(buttonStartX, 100, 0, 10)
-toggleButton.BackgroundColor3 = Color3.new(1, 0, 0)
+toggleButton.BackgroundColor3 = Color3.new(0, 1, 0)
 toggleButton.TextColor3 = Color3.new(1, 1, 1)
 toggleButton.TextScaled = true
-toggleButton.Text = "Tắt lụm rương"
+toggleButton.Text = "-"
 toggleButton.Parent = uiContainer
 
 toggleButton.MouseButton1Click:Connect(function()
     collectChests = not collectChests -- Đảo trạng thái
     if collectChests then
-        toggleButton.Text = "Tắt lụm rương"
+        toggleButton.Text = "-"
         toggleButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Chuyển thành màu xanh
     else
-        toggleButton.Text = "Bật lụm rương"
+        toggleButton.Text = "+"
         toggleButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Chuyển thành màu đỏ
     end
 end)
@@ -100,6 +107,8 @@ confirmationFrame.Size = UDim2.new(0, 400, 0, 200)
 confirmationFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
 confirmationFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 confirmationFrame.Visible = false
+confirmationFrame.Active = true
+confirmationFrame.Draggable = true
 confirmationFrame.Parent = gui
 
 local confirmationLabel = Instance.new("TextLabel")
@@ -139,7 +148,13 @@ end)
 
 confirmButton.MouseButton1Click:Connect(function()
     confirmationFrame.Visible = false
-    -- Logic đổi server ở đây
+    local servers = httpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. currentGame .. "/servers/Public?sortOrder=Asc&limit=100"))
+    for _, server in ipairs(servers.data) do
+        if server.id ~= game.JobId then
+            teleportService:TeleportToPlaceInstance(currentGame, server.id, LocalPlayer)
+            break
+        end
+    end
 end)
 
 -- Hàm lấy thông tin nhân vật
@@ -177,29 +192,4 @@ end
 -- Hàm di chuyển đến rương
 local function TeleportToChest(Chest)
     local RootPart = getCharacter().HumanoidRootPart
-    local distance = (RootPart.Position - Chest.Position).Magnitude
-    while distance > 1 and collectChests do
-        local Direction = (Chest.Position - RootPart.Position).Unit
-        RootPart.CFrame = RootPart.CFrame + Direction * (MaxSpeed * wait())
-        distance = (RootPart.Position - Chest.Position).Magnitude
-    end
-end
-
--- Hàm chính
-local function main()
-    while true do
-        local Chests = getChestsSorted()
-        chestsLabel.Text = "Số rương: " .. #Chests
-
-        if #Chests > 0 and collectChests then
-            TeleportToChest(Chests[1])
-            wait(4) -- Tạm dừng sau khi lượm rương
-        elseif #Chests == 0 then
-            break -- Ngưng lượm rương nếu không còn rương
-        else
-            wait(1)
-        end
-    end
-end
-
-main()
+    local distance
