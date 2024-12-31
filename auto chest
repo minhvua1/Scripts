@@ -1,7 +1,10 @@
 local MaxSpeed = 275 -- Tốc độ di chuyển
+local WaitBetweenChests = 0.5 -- Thời gian chờ giữa các rương (giây)
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local UncheckedChests = {}
 local FirstRun = true
+local TweenService = game:GetService("TweenService")
+local tweening = false
 local wait = task.wait
 local httpService = game:GetService("HttpService")
 local teleportService = game:GetService("TeleportService")
@@ -31,8 +34,6 @@ toggleUIButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
 toggleUIButton.TextScaled = true
 toggleUIButton.Text = "-"
-toggleUIButton.Active = true
-toggleUIButton.Draggable = true
 toggleUIButton.Parent = gui
 
 toggleUIButton.MouseButton1Click:Connect(function()
@@ -91,72 +92,6 @@ toggleButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Nút để đổi server
-local serverButton = Instance.new("TextButton")
-serverButton.Size = buttonSize
-serverButton.Position = UDim2.new(buttonStartX, 275, 0, 10)
-serverButton.BackgroundColor3 = Color3.new(0, 0, 1)
-serverButton.TextColor3 = Color3.new(1, 1, 1)
-serverButton.TextScaled = true
-serverButton.Text = "Đổi Server"
-serverButton.Parent = uiContainer
-
--- Bảng xác nhận đổi server
-local confirmationFrame = Instance.new("Frame")
-confirmationFrame.Size = UDim2.new(0, 400, 0, 200)
-confirmationFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
-confirmationFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-confirmationFrame.Visible = false
-confirmationFrame.Active = true
-confirmationFrame.Draggable = true
-confirmationFrame.Parent = gui
-
-local confirmationLabel = Instance.new("TextLabel")
-confirmationLabel.Size = UDim2.new(1, 0, 0.6, 0)
-confirmationLabel.Position = UDim2.new(0, 0, 0, 0)
-confirmationLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-confirmationLabel.TextColor3 = Color3.new(1, 1, 1)
-confirmationLabel.TextScaled = true
-confirmationLabel.Text = "Bạn chắc chắn muốn đổi server chưa? hãy kiểm tra inventory thật kỹ!"
-confirmationLabel.Parent = confirmationFrame
-
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-closeButton.Position = UDim2.new(0.05, 0, 0.7, 0)
-closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
-closeButton.TextColor3 = Color3.new(1, 1, 1)
-closeButton.TextScaled = true
-closeButton.Text = "Hủy"
-closeButton.Parent = confirmationFrame
-
-local confirmButton = Instance.new("TextButton")
-confirmButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-confirmButton.Position = UDim2.new(0.55, 0, 0.7, 0)
-confirmButton.BackgroundColor3 = Color3.new(0, 1, 0)
-confirmButton.TextColor3 = Color3.new(1, 1, 1)
-confirmButton.TextScaled = true
-confirmButton.Text = "Đổi Server"
-confirmButton.Parent = confirmationFrame
-
-serverButton.MouseButton1Click:Connect(function()
-    confirmationFrame.Visible = true
-end)
-
-closeButton.MouseButton1Click:Connect(function()
-    confirmationFrame.Visible = false
-end)
-
-confirmButton.MouseButton1Click:Connect(function()
-    confirmationFrame.Visible = false
-    local servers = httpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. currentGame .. "/servers/Public?sortOrder=Asc&limit=100"))
-    for _, server in ipairs(servers.data) do
-        if server.id ~= game.JobId then
-            teleportService:TeleportToPlaceInstance(currentGame, server.id, LocalPlayer)
-            break
-        end
-    end
-end)
-
 -- Hàm lấy thông tin nhân vật
 local function getCharacter()
     if not LocalPlayer.Character then
@@ -191,5 +126,29 @@ end
 
 -- Hàm di chuyển đến rương
 local function TeleportToChest(Chest)
+    tweening = true
     local RootPart = getCharacter().HumanoidRootPart
-    local distance
+    local tweenInfo = TweenInfo.new((RootPart.Position - Chest.Position).Magnitude / MaxSpeed, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = Chest.CFrame})
+    tween:Play()
+    tween.Completed:Wait(4)
+    tweening = false
+end
+
+-- Logic lượm rương
+task.spawn(function()
+    while true do
+        wait()
+        if collectChests and not tweening then
+            local Chests = getChestsSorted()
+            if #Chests > 0 then
+                chestsLabel.Text = "Số rương còn lại: " .. tostring(#Chests)
+                TeleportToChest(Chests[1])
+                wait(WaitBetweenChests)
+            else
+                chestsLabel.Text = "Không còn rương nào!"
+                collectChests = false -- Tạm ngưng nếu không còn rương
+            end
+        end
+    end
+end)
