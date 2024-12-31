@@ -1,95 +1,136 @@
 local MaxSpeed = 275 -- Tốc độ di chuyển
-local WaitBetweenChests = 0.5 -- Thời gian chờ giữa các rương (giây)
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local UncheckedChests = {}
 local FirstRun = true
-local TweenService = game:GetService("TweenService")
-local tweening = false
 local wait = task.wait
-local httpService = game:GetService("HttpService")
-local teleportService = game:GetService("TeleportService")
-local currentGame = game.PlaceId
-
--- Tạo ScreenGui
 local gui = Instance.new("ScreenGui")
 gui.Parent = game:GetService("CoreGui")
 
-local uiVisible = true -- Biến kiểm soát hiển thị UI
 local collectChests = true -- Biến kiểm soát việc lượm rương
 
--- Giao diện chính
-local uiContainer = Instance.new("Frame")
-uiContainer.Size = UDim2.new(1, 0, 0, 60) -- Chiều cao tối đa 60
-uiContainer.Position = UDim2.new(0, 0, 0, 10) -- Gần trên cùng
-uiContainer.BackgroundTransparency = 1
-uiContainer.Active = true
-uiContainer.Draggable = true
-uiContainer.Parent = gui
-
--- Nút bật/tắt UI
-local toggleUIButton = Instance.new("TextButton")
-toggleUIButton.Size = UDim2.new(0, 40, 0, 40)
-toggleUIButton.Position = UDim2.new(0, 10, 0, 10)
-toggleUIButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
-toggleUIButton.TextScaled = true
-toggleUIButton.Text = "-"
-toggleUIButton.Parent = gui
-
-toggleUIButton.MouseButton1Click:Connect(function()
-    uiVisible = not uiVisible
-    uiContainer.Visible = uiVisible
-    if uiVisible then
-        toggleUIButton.Text = "-"
-    else
-        toggleUIButton.Text = "+"
-    end
-end)
-
--- Kích thước và khoảng cách giữa các nút
+-- Giao diện nhỏ gọn nằm ở giữa trên khung hình
 local buttonSize = UDim2.new(0, 150, 0, 40)
-local buttonSpacing = 10 -- Khoảng cách giữa các nút
-local buttonStartX = 0.5 -- Bắt đầu từ giữa màn hình
+local buttonSpacing = 10
 
 -- TextLabel để hiển thị số rương còn lại
 local chestsLabel = Instance.new("TextLabel")
 chestsLabel.Size = buttonSize
-chestsLabel.Position = UDim2.new(buttonStartX, -250, 0, 10)
+chestsLabel.Position = UDim2.new(0.5, -(150 * 1.5 + buttonSpacing), 0, 10)
 chestsLabel.BackgroundColor3 = Color3.new(0, 0, 0)
 chestsLabel.TextColor3 = Color3.new(1, 1, 1)
 chestsLabel.TextScaled = true
-chestsLabel.Text = "Số rương còn lại: Đang tải..."
-chestsLabel.Parent = uiContainer
+chestsLabel.Text = "Số rương: Đang tải..."
+chestsLabel.Parent = gui
 
 -- TextLabel để ghi credit
 local creditLabel = Instance.new("TextLabel")
 creditLabel.Size = buttonSize
-creditLabel.Position = UDim2.new(buttonStartX, -75, 0, 10)
+creditLabel.Position = UDim2.new(0.5, -(150 * 0.5), 0, 10)
 creditLabel.BackgroundColor3 = Color3.new(0, 0, 0)
 creditLabel.TextColor3 = Color3.new(1, 1, 1)
 creditLabel.TextScaled = true
 creditLabel.Text = "Làm bởi Capy"
-creditLabel.Parent = uiContainer
+creditLabel.Parent = gui
 
 -- Nút để bật/tắt lượm rương
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = buttonSize
-toggleButton.Position = UDim2.new(buttonStartX, 100, 0, 10)
-toggleButton.BackgroundColor3 = Color3.new(0, 1, 0)
+toggleButton.Position = UDim2.new(0.5, (150 * 0.5 + buttonSpacing), 0, 10)
+toggleButton.BackgroundColor3 = Color3.new(1, 0, 0)
 toggleButton.TextColor3 = Color3.new(1, 1, 1)
 toggleButton.TextScaled = true
-toggleButton.Text = "-"
-toggleButton.Parent = uiContainer
+toggleButton.Text = "Tắt lượm rương"
+toggleButton.Parent = gui
 
 toggleButton.MouseButton1Click:Connect(function()
     collectChests = not collectChests -- Đảo trạng thái
     if collectChests then
-        toggleButton.Text = "-"
+        toggleButton.Text = "Tắt lượm rương"
         toggleButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Chuyển thành màu xanh
     else
-        toggleButton.Text = "+"
+        toggleButton.Text = "Bật lượm rương"
         toggleButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Chuyển thành màu đỏ
     end
+end)
+
+-- Nút để đổi server
+local serverButton = Instance.new("TextButton")
+serverButton.Size = buttonSize
+serverButton.Position = UDim2.new(0.5, (150 * 1.5 + buttonSpacing * 2), 0, 10)
+serverButton.BackgroundColor3 = Color3.new(0, 0, 1)
+serverButton.TextColor3 = Color3.new(1, 1, 1)
+serverButton.TextScaled = true
+serverButton.Text = "Đổi Server"
+serverButton.Parent = gui
+
+-- Bảng xác nhận đổi server
+local confirmationFrame = Instance.new("Frame")
+confirmationFrame.Size = UDim2.new(0, 400, 0, 200)
+confirmationFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
+confirmationFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+confirmationFrame.Visible = false
+confirmationFrame.Parent = gui
+
+local confirmationLabel = Instance.new("TextLabel")
+confirmationLabel.Size = UDim2.new(1, 0, 0.6, 0)
+confirmationLabel.Position = UDim2.new(0, 0, 0, 0)
+confirmationLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+confirmationLabel.TextColor3 = Color3.new(1, 1, 1)
+confirmationLabel.TextScaled = true
+confirmationLabel.Text = "Bạn chắc chắn muốn đổi server chưa?\nHãy kiểm tra inventory thật kỹ."
+confirmationLabel.Parent = confirmationFrame
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+closeButton.Position = UDim2.new(0.05, 0, 0.7, 0)
+closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+closeButton.TextScaled = true
+closeButton.Text = "Hủy"
+closeButton.Parent = confirmationFrame
+
+local confirmButton = Instance.new("TextButton")
+confirmButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+confirmButton.Position = UDim2.new(0.55, 0, 0.7, 0)
+confirmButton.BackgroundColor3 = Color3.new(0, 1, 0)
+confirmButton.TextColor3 = Color3.new(1, 1, 1)
+confirmButton.TextScaled = true
+confirmButton.Text = "Đổi Server"
+confirmButton.Parent = confirmationFrame
+
+-- Hiển thị bảng xác nhận khi bấm nút đổi server
+serverButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = true
+end)
+
+-- Đóng bảng xác nhận khi bấm hủy
+closeButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = false
+end)
+
+-- Đổi server khi bấm xác nhận
+confirmButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = false
+    print("Đổi server...") -- Gọi đoạn script đổi server của bạn
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+ 
+    local _place = game.PlaceId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    
+    function ListServers(cursor)
+        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+        return Http:JSONDecode(Raw)
+    end
+    
+    local Server, Next; repeat
+        local Servers = ListServers(Next)
+        Server = Servers.data[1]
+        Next = Servers.nextPageCursor
+    until Server
+    
+    TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
 end)
 
 -- Hàm lấy thông tin nhân vật
@@ -126,29 +167,87 @@ end
 
 -- Hàm di chuyển đến rương
 local function TeleportToChest(Chest)
-    tweening = true
     local RootPart = getCharacter().HumanoidRootPart
-    local tweenInfo = TweenInfo.new((RootPart.Position - Chest.Position).Magnitude / MaxSpeed, Enum.EasingStyle.Linear)
-    local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = Chest.CFrame})
-    tween:Play()
-    tween.Completed:Wait(4)
-    tweening = false
+    local distance = (RootPart.Position - Chest.Position).Magnitude
+    while distance > 1 and collectChests do
+        local Direction = (Chest.Position - RootPart.Position).Unit
+        RootPart.CFrame = RootPart.CFrame + Direction * (MaxSpeed * wait())
+        distance = (RootPart.Position - Chest.Position).Magnitude
+    end
 end
 
--- Logic lượm rương
-task.spawn(function()
+-- Hàm chính
+local function main()
     while true do
-        wait()
-        if collectChests and not tweening then
-            local Chests = getChestsSorted()
-            if #Chests > 0 then
-                chestsLabel.Text = "Số rương còn lại: " .. tostring(#Chests)
-                TeleportToChest(Chests[1])
-                wait(WaitBetweenChests)
-            else
-                chestsLabel.Text = "Không còn rương nào!"
-                collectChests = false -- Tạm ngưng nếu không còn rương
-            end
+        local Chests = getChestsSorted()
+        chestsLabel.Text = "Số rương: " .. #Chests
+
+        if #Chests > 0 and collectChests then
+            TeleportToChest(Chests[1])
+            wait(4) -- Tạm dừng sau khi lượm rương
+        elseif #Chests == 0 then
+            break -- Ngưng lượm rương nếu không còn rương
+        else
+            wait(1)
         end
     end
+end
+
+-- Tạo nút "+" và "-" để bật/tắt các UI
+local toggleUiButton = Instance.new("TextButton")
+toggleUiButton.Size = UDim2.new(0, 50, 0, 50)
+toggleUiButton.Position = UDim2.new(0.5, 100, 0, 10)  -- Vị trí của nút
+toggleUiButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Màu xanh khi bật
+toggleUiButton.TextColor3 = Color3.new(1, 1, 1)
+toggleUiButton.Text = "+"
+toggleUiButton.Parent = gui
+
+local uiVisible = true  -- Biến để theo dõi trạng thái ẩn/hiện UI
+
+-- Hàm để kéo nút "+" và "-" di chuyển trên màn hình
+local dragging = false
+local dragInput, dragStart, startPos
+
+toggleUiButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = toggleUiButton.Position
+    end
 end)
+
+toggleUiButton.InputChanged:Connect(function(input)
+    if dragging then
+        local delta = input.Position - dragStart
+        toggleUiButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+toggleUiButton.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- Khi nhấn nút "+", ẩn/hiện các thành phần UI
+toggleUiButton.MouseButton1Click:Connect(function()
+    uiVisible = not uiVisible
+
+    -- Thay đổi nội dung nút "+" thành "-"
+    if uiVisible then
+        toggleUiButton.Text = "+"
+        chestsLabel.Visible = true
+        creditLabel.Visible = true
+        toggleButton.Visible = true
+        serverButton.Visible = true
+    else
+        toggleUiButton.Text = "-"
+        chestsLabel.Visible = false
+        creditLabel.Visible = false
+        toggleButton.Visible = false
+        serverButton.Visible = false
+    end
+end)
+
+-- Chạy hàm chính
+main()
