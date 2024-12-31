@@ -25,16 +25,16 @@ toggleUIButton.Position = UDim2.new(0, 10, 0, 10)
 toggleUIButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
 toggleUIButton.TextScaled = true
-toggleUIButton.Text = "Ẩn UI"
+toggleUIButton.Text = "-"
 toggleUIButton.Parent = gui
 
 toggleUIButton.MouseButton1Click:Connect(function()
     uiVisible = not uiVisible
     uiContainer.Visible = uiVisible
     if uiVisible then
-        toggleUIButton.Text = "Ẩn UI"
+        toggleUIButton.Text = "-"
     else
-        toggleUIButton.Text = "Hiện UI"
+        toggleUIButton.Text = "+"
     end
 end)
 
