@@ -1,96 +1,133 @@
-local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local TweenService = game:GetService("TweenService")
-local player = Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui", player.PlayerGui)
+local MaxSpeed = 275 -- Studs per second
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Locations = workspace._WorldOrigin.Locations
+local UncheckedChests = {}
+local FirstRun = true
+local wait = task.wait
+local startTime = tick()
+local gui = Instance.new("ScreenGui")
+gui.Parent = game:GetService("CoreGui")
 
--- Thông báo GUI
-local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 300, 0, 100)
-frame.Position = UDim2.new(0.5, -150, 0, -50)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-frame.BackgroundTransparency = 0.6
-frame.BorderSizePixel = 0
+-- TextLabel để hiển thị số rương còn lại
+local chestsLabel = Instance.new("TextLabel")
+chestsLabel.Size = UDim2.new(0, 200, 0, 50)
+chestsLabel.Position = UDim2.new(0, 10, 0, 10)
+chestsLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+chestsLabel.TextColor3 = Color3.new(1, 1, 1)
+chestsLabel.TextScaled = true
+chestsLabel.Parent = gui
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0.5, 0)
-title.BackgroundTransparency = 1
-title.Text = "Từ Capy Hub"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 20
-title.TextAlign = Enum.TextAnchor.MiddleCenter
-title.Font = Enum.Font.SourceSansBold
+-- TextLabel để hiển thị thời gian còn lại
+local timerLabel = Instance.new("TextLabel")
+timerLabel.Size = UDim2.new(0, 200, 0, 50)
+timerLabel.Position = UDim2.new(0, 10, 0, 70)
+timerLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+timerLabel.TextColor3 = Color3.new(1, 1, 1)
+timerLabel.TextScaled = true
+timerLabel.Parent = gui
 
-local text = Instance.new("TextLabel", frame)
-text.Size = UDim2.new(1, 0, 0.5, 0)
-text.Position = UDim2.new(0, 0, 0.5, 0)
-text.BackgroundTransparency = 1
-text.Text = "Bạn có muốn bật Anti AFK?"
-text.TextColor3 = Color3.fromRGB(255, 255, 255)
-text.TextSize = 16
-text.TextAlign = Enum.TextAnchor.MiddleCenter
-text.Font = Enum.Font.SourceSans
+-- TextLabel để ghi credit
+local creditLabel = Instance.new("TextLabel")
+creditLabel.Size = UDim2.new(0, 200, 0, 50)
+creditLabel.Position = UDim2.new(0, 10, 0, 130)
+creditLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+creditLabel.TextColor3 = Color3.new(1, 1, 1)
+creditLabel.TextScaled = true
+creditLabel.Text = "Làm bởi Capy"
+creditLabel.Parent = gui
 
--- Nút Yes
-local yesButton = Instance.new("TextButton", frame)
-yesButton.Size = UDim2.new(0.5, -5, 0, 30)
-yesButton.Position = UDim2.new(0, 5, 0.7, 0)
-yesButton.Text = "Yes"
-yesButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-yesButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-yesButton.Font = Enum.Font.SourceSans
-yesButton.TextSize = 18
+local function getCharacter()
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+    end
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
 
--- Nút No
-local noButton = Instance.new("TextButton", frame)
-noButton.Size = UDim2.new(0.5, -5, 0, 30)
-noButton.Position = UDim2.new(0.5, 5, 0.7, 0)
-noButton.Text = "No"
-noButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-noButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-noButton.Font = Enum.Font.SourceSans
-noButton.TextSize = 18
-
--- Hiệu ứng animation cho notification
-local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
-local goal = {Position = UDim2.new(0.5, -150, 0, 50)}
-
-local tween = TweenService:Create(frame, tweenInfo, goal)
-tween:Play()
-
--- Âm thanh khi nhấn Yes hoặc No
-local clickSound = Instance.new("Sound")
-clickSound.SoundId = "rbxassetid://183022052" -- ID âm thanh nhấn nút
-clickSound.Parent = player.Character or player:WaitForChild("PlayerGui")
-
--- Hàm gọi khi nhấn Yes
-yesButton.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    print("Đã bật Anti AFK!")
-    
-    -- Thực hiện logic Anti AFK tại đây
-    local vu = game:GetService("VirtualUser")
-    local player = game:GetService("Players").LocalPlayer
-    player.Idled:Connect(function()
-        vu:CaptureController()
-        vu:ClickButton2(Vector2.new(0, 0))
+local function DistanceFromPlrSort(ObjectList)
+    local RootPart = getCharacter().HumanoidRootPart
+    table.sort(ObjectList, function(ChestA, ChestB)
+        local RootPos = RootPart.Position
+        local DistanceA = (RootPos - ChestA.Position).Magnitude
+        local DistanceB = (RootPos - ChestB.Position).Magnitude
+        return DistanceA < DistanceB
     end)
+end
 
-    -- Thông báo đã bật Anti AFK
-    StarterGui:SetCore("SendNotification", {
-        Title = "Thông Báo",
-        Text = "Đã bật Anti AFK!",
-        Duration = 5,
-        Button1 = "Ok"
-    })
+local function getChestsSorted()
+    if FirstRun then
+        FirstRun = false
+        for _, Object in pairs(workspace:GetDescendants()) do
+            if Object.Name:find("Chest") and Object:IsA("Part") then
+                table.insert(UncheckedChests, Object)
+            end
+        end
+    end
+    local Chests = {}
+    for _, Chest in pairs(UncheckedChests) do
+        if Chest:FindFirstChild("TouchInterest") then
+            table.insert(Chests, Chest)
+        end
+    end
+    DistanceFromPlrSort(Chests)
+    return Chests
+end
+
+local function toggleNoclip(Toggle)
+    for _, v in pairs(getCharacter():GetChildren()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = not Toggle
+        end
+    end
+end
+
+local function Teleport(Goal, Speed)
+    Speed = Speed or MaxSpeed
+    toggleNoclip(true)
+    local RootPart = getCharacter().HumanoidRootPart
+    local Magnitude = (RootPart.Position - Goal.Position).Magnitude
     
-    -- Đóng thông báo hiện tại
-    frame:Destroy()
-end)
+    while Magnitude >= 1 do
+        local Direction = (Goal.Position - RootPart.Position).unit
+        RootPart.CFrame = RootPart.CFrame + Direction * (Speed * wait())
+        Magnitude = (RootPart.Position - Goal.Position).Magnitude
+    end
+    
+    toggleNoclip(false)
+end
 
--- Hàm gọi khi nhấn No
-noButton.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    print("Người chơi đã từ chối bật Anti AFK.")
-    frame:Destroy()
-end)
+local function ServerHop()
+    print("Switching server...")
+    -- Add your server switch logic here
+end
+
+local function updateLabels()
+    while true do
+        local Chests = getChestsSorted()
+        chestsLabel.Text = "Số rương còn lại: " .. #Chests
+        local remainingTime = math.max(0, 300 - math.floor(tick() - startTime))
+        timerLabel.Text = "Đổi server sau: " .. remainingTime .. " giây"
+        wait(1) -- Cập nhật mỗi giây
+    end
+end
+
+local function main()
+    task.spawn(updateLabels) -- Chạy song song việc cập nhật label
+    while true do
+        if tick() - startTime > 300 then
+            ServerHop()
+            break
+        end
+
+        local Chests = getChestsSorted()
+        if #Chests > 0 then
+            Teleport(Chests[1].CFrame)
+            wait(4) -- Pause for 4 seconds after collecting a chest
+        else
+            ServerHop()
+            break
+        end
+    end
+end
+
+main()
