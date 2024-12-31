@@ -133,6 +133,61 @@ confirmButton.MouseButton1Click:Connect(function()
     TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
 end)
 
+-- Tạo nút "+" và "-" để ẩn/hiện các UI
+local toggleButtonSize = UDim2.new(0, 50, 0, 50) -- Kích thước của nút
+local toggleButtonPosition = UDim2.new(0.5, 0, 0, 0) -- Vị trí của nút (ở giữa)
+
+local toggleUIButton = Instance.new("TextButton")
+toggleUIButton.Size = toggleButtonSize
+toggleUIButton.Position = toggleButtonPosition
+toggleUIButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Màu đen
+toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
+toggleUIButton.TextScaled = true
+toggleUIButton.Text = "+"
+toggleUIButton.TextButtonStyle = Enum.ButtonStyle.RobloxButton
+toggleUIButton.Parent = gui
+
+local uiVisible = true
+
+-- Kéo nút "+"
+local UserInputService = game:GetService("UserInputService")
+local dragging = false
+local dragStart
+local startPos
+
+toggleUIButton.MouseButton1Down:Connect(function(input)
+    dragging = true
+    dragStart = input.Position
+    startPos = toggleUIButton.Position
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging then
+        local delta = input.Position - dragStart
+        toggleUIButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+toggleUIButton.MouseButton1Up:Connect(function()
+    dragging = false
+end)
+
+-- Sự kiện bật/tắt UI
+toggleUIButton.MouseButton1Click:Connect(function()
+    if uiVisible then
+        -- Ẩn các UI
+        chestsLabel.Visible = false
+        creditLabel.Visible = false
+        toggleUIButton.Text = "-" -- Đổi thành dấu trừ
+    else
+        -- Hiển thị lại các UI
+        chestsLabel.Visible = true
+        creditLabel.Visible = true
+        toggleUIButton.Text = "+" -- Đổi lại thành dấu cộng
+    end
+    uiVisible = not uiVisible -- Đảo trạng thái hiển thị
+end)
+
 -- Hàm lấy thông tin nhân vật
 local function getCharacter()
     if not LocalPlayer.Character then
@@ -193,61 +248,4 @@ local function main()
     end
 end
 
--- Tạo nút "+" và "-" để bật/tắt các UI
-local toggleUiButton = Instance.new("TextButton")
-toggleUiButton.Size = UDim2.new(0, 50, 0, 50)
-toggleUiButton.Position = UDim2.new(0.5, 100, 0, 10)  -- Vị trí của nút
-toggleUiButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Màu xanh khi bật
-toggleUiButton.TextColor3 = Color3.new(1, 1, 1)
-toggleUiButton.Text = "+"
-toggleUiButton.Parent = gui
-
-local uiVisible = true  -- Biến để theo dõi trạng thái ẩn/hiện UI
-
--- Hàm để kéo nút "+" và "-" di chuyển trên màn hình
-local dragging = false
-local dragInput, dragStart, startPos
-
-toggleUiButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = toggleUiButton.Position
-    end
-end)
-
-toggleUiButton.InputChanged:Connect(function(input)
-    if dragging then
-        local delta = input.Position - dragStart
-        toggleUiButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
-toggleUiButton.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
--- Khi nhấn nút "+", ẩn/hiện các thành phần UI
-toggleUiButton.MouseButton1Click:Connect(function()
-    uiVisible = not uiVisible
-
-    -- Thay đổi nội dung nút "+" thành "-"
-    if uiVisible then
-        toggleUiButton.Text = "+"
-        chestsLabel.Visible = true
-        creditLabel.Visible = true
-        toggleButton.Visible = true
-        serverButton.Visible = true
-    else
-        toggleUiButton.Text = "-"
-        chestsLabel.Visible = false
-        creditLabel.Visible = false
-        toggleButton.Visible = false
-        serverButton.Visible = false
-    end
-end)
-
--- Chạy hàm chính
-main()
+main() -- Chạy hàm chính
