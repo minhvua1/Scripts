@@ -8,6 +8,7 @@ local wait = task.wait
 local gui = Instance.new("ScreenGui")
 gui.Parent = game:GetService("CoreGui")
 
+local uiVisible = true -- Biến kiểm soát hiển thị UI
 local collectChests = true -- Biến kiểm soát việc lượm rương
 
 -- Giao diện chính
@@ -16,6 +17,26 @@ uiContainer.Size = UDim2.new(1, 0, 0, 60) -- Chiều cao tối đa 60
 uiContainer.Position = UDim2.new(0, 0, 0, 10) -- Gần trên cùng
 uiContainer.BackgroundTransparency = 1
 uiContainer.Parent = gui
+
+-- Nút bật/tắt UI
+local toggleUIButton = Instance.new("TextButton")
+toggleUIButton.Size = UDim2.new(0, 150, 0, 40)
+toggleUIButton.Position = UDim2.new(0, 10, 0, 10)
+toggleUIButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
+toggleUIButton.TextScaled = true
+toggleUIButton.Text = "Ẩn UI"
+toggleUIButton.Parent = gui
+
+toggleUIButton.MouseButton1Click:Connect(function()
+    uiVisible = not uiVisible
+    uiContainer.Visible = uiVisible
+    if uiVisible then
+        toggleUIButton.Text = "Ẩn UI"
+    else
+        toggleUIButton.Text = "Hiện UI"
+    end
+end)
 
 -- Kích thước và khoảng cách giữa các nút
 local buttonSize = UDim2.new(0, 150, 0, 40)
@@ -118,24 +139,7 @@ end)
 
 confirmButton.MouseButton1Click:Connect(function()
     confirmationFrame.Visible = false
-    local Http = game:GetService("HttpService")
-    local TPS = game:GetService("TeleportService")
-    local Api = "https://games.roblox.com/v1/games/"
-    local _place = game.PlaceId
-    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
-    
-    function ListServers(cursor)
-        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
-        return Http:JSONDecode(Raw)
-    end
-    
-    local Server, Next; repeat
-        local Servers = ListServers(Next)
-        Server = Servers.data[1]
-        Next = Servers.nextPageCursor
-    until Server
-    
-    TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
+    -- Logic đổi server ở đây
 end)
 
 -- Hàm lấy thông tin nhân vật
@@ -189,7 +193,7 @@ local function main()
 
         if #Chests > 0 and collectChests then
             TeleportToChest(Chests[1])
-            wait(5) -- Tạm dừng sau khi lượm rương
+            wait(4) -- Tạm dừng sau khi lượm rương
         elseif #Chests == 0 then
             break -- Ngưng lượm rương nếu không còn rương
         else
