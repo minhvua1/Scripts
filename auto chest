@@ -12,14 +12,20 @@ local collectChests = true -- Biến kiểm soát việc lượm rương
 
 -- Giao diện chính
 local uiContainer = Instance.new("Frame")
-uiContainer.Size = UDim2.new(1, 0, 1, 0)
+uiContainer.Size = UDim2.new(1, 0, 0, 60) -- Chiều cao tối đa 60
+uiContainer.Position = UDim2.new(0, 0, 0, 10) -- Gần trên cùng
 uiContainer.BackgroundTransparency = 1
 uiContainer.Parent = gui
 
+-- Kích thước và khoảng cách giữa các nút
+local buttonSize = UDim2.new(0, 150, 0, 40)
+local buttonSpacing = 10 -- Khoảng cách giữa các nút
+local buttonStartX = 0.5 -- Bắt đầu từ giữa màn hình
+
 -- TextLabel để hiển thị số rương còn lại
 local chestsLabel = Instance.new("TextLabel")
-chestsLabel.Size = UDim2.new(0, 150, 0, 40)
-chestsLabel.Position = UDim2.new(0.5, -300, 0, 10)
+chestsLabel.Size = buttonSize
+chestsLabel.Position = UDim2.new(buttonStartX, -250, 0, 10)
 chestsLabel.BackgroundColor3 = Color3.new(0, 0, 0)
 chestsLabel.TextColor3 = Color3.new(1, 1, 1)
 chestsLabel.TextScaled = true
@@ -28,8 +34,8 @@ chestsLabel.Parent = uiContainer
 
 -- TextLabel để ghi credit
 local creditLabel = Instance.new("TextLabel")
-creditLabel.Size = UDim2.new(0, 150, 0, 40)
-creditLabel.Position = UDim2.new(0.5, -75, 0, 10)
+creditLabel.Size = buttonSize
+creditLabel.Position = UDim2.new(buttonStartX, -75, 0, 10)
 creditLabel.BackgroundColor3 = Color3.new(0, 0, 0)
 creditLabel.TextColor3 = Color3.new(1, 1, 1)
 creditLabel.TextScaled = true
@@ -38,8 +44,8 @@ creditLabel.Parent = uiContainer
 
 -- Nút để bật/tắt lượm rương
 local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 150, 0, 40)
-toggleButton.Position = UDim2.new(0.5, 150, 0, 10)
+toggleButton.Size = buttonSize
+toggleButton.Position = UDim2.new(buttonStartX, 100, 0, 10)
 toggleButton.BackgroundColor3 = Color3.new(1, 0, 0)
 toggleButton.TextColor3 = Color3.new(1, 1, 1)
 toggleButton.TextScaled = true
@@ -59,8 +65,8 @@ end)
 
 -- Nút để đổi server
 local serverButton = Instance.new("TextButton")
-serverButton.Size = UDim2.new(0, 150, 0, 40)
-serverButton.Position = UDim2.new(0.5, 300, 0, 10)
+serverButton.Size = buttonSize
+serverButton.Position = UDim2.new(buttonStartX, 275, 0, 10)
 serverButton.BackgroundColor3 = Color3.new(0, 0, 1)
 serverButton.TextColor3 = Color3.new(1, 1, 1)
 serverButton.TextScaled = true
@@ -132,49 +138,64 @@ confirmButton.MouseButton1Click:Connect(function()
     TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
 end)
 
--- Nút chính để ẩn/hiện giao diện
-local toggleUIButton = Instance.new("TextButton")
-toggleUIButton.Size = UDim2.new(0, 50, 0, 50)
-toggleUIButton.Position = UDim2.new(0.1, 0, 0.1, 0) -- Vị trí ban đầu
-toggleUIButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-toggleUIButton.TextColor3 = Color3.new(1, 1, 1)
-toggleUIButton.TextScaled = true
-toggleUIButton.Text = "-"
-toggleUIButton.Parent = gui
-
-local isVisible = true
-toggleUIButton.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    uiContainer.Visible = isVisible
-    toggleUIButton.Text = isVisible and "-" or "+"
-end)
-
--- Làm draggable cho nút chính
-local dragging = false
-local dragStart, startPos
-
-toggleUIButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = toggleUIButton.Position
+-- Hàm lấy thông tin nhân vật
+local function getCharacter()
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
     end
-end)
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
 
-toggleUIButton.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
-        local delta = input.Position - dragStart
-        toggleUIButton.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
+-- Hàm lấy danh sách rương, sắp xếp theo khoảng cách
+local function getChestsSorted()
+    if FirstRun then
+        FirstRun = false
+        for _, Object in pairs(workspace:GetDescendants()) do
+            if Object.Name:find("Chest") and Object:IsA("Part") then
+                table.insert(UncheckedChests, Object)
+            end
+        end
     end
-end)
+    local Chests = {}
+    for _, Chest in pairs(UncheckedChests) do
+        if Chest:FindFirstChild("TouchInterest") then
+            table.insert(Chests, Chest)
+        end
+    end
+    table.sort(Chests, function(ChestA, ChestB)
+        local RootPos = getCharacter().HumanoidRootPart.Position
+        return (RootPos - ChestA.Position).Magnitude < (RootPos - ChestB.Position).Magnitude
+    end)
+    return Chests
+end
 
-toggleUIButton.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
+-- Hàm di chuyển đến rương
+local function TeleportToChest(Chest)
+    local RootPart = getCharacter().HumanoidRootPart
+    local distance = (RootPart.Position - Chest.Position).Magnitude
+    while distance > 1 and collectChests do
+        local Direction = (Chest.Position - RootPart.Position).Unit
+        RootPart.CFrame = RootPart.CFrame + Direction * (MaxSpeed * wait())
+        distance = (RootPart.Position - Chest.Position).Magnitude
     end
-end)
+end
+
+-- Hàm chính
+local function main()
+    while true do
+        local Chests = getChestsSorted()
+        chestsLabel.Text = "Số rương: " .. #Chests
+
+        if #Chests > 0 and collectChests then
+            TeleportToChest(Chests[1])
+            wait(5) -- Tạm dừng sau khi lượm rương
+        elseif #Chests == 0 then
+            break -- Ngưng lượm rương nếu không còn rương
+        else
+            wait(1)
+        end
+    end
+end
+
+main()
