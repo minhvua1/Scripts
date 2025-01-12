@@ -4,6 +4,7 @@
 -- Instances:
 
 local ScreenGui = Instance.new("ScreenGui")
+screenGui.ResetOnSpawn = false
 local Main = Instance.new("Frame")
 local Up = Instance.new("Frame")
 local Name = Instance.new("TextLabel")
@@ -59,6 +60,8 @@ local ImageButton = Instance.new("ImageButton")
 local UICorner_5 = Instance.new("UICorner")
 local UIAspectRatioConstraint_18 = Instance.new("UIAspectRatioConstraint")
 
+local player = game.Players.LocalPlayer
+screenGui.Parent = player:WaitForChild("PlayerGui")
 --Properties:
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
