@@ -59,14 +59,6 @@ local ImageButton = Instance.new("ImageButton")
 local UICorner_5 = Instance.new("UICorner")
 local UIAspectRatioConstraint_18 = Instance.new("UIAspectRatioConstraint")
 
- screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
- game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    task.wait(0.1)
-    -- Các lệnh khác ở đây nếu cần
-end) -- Kết thúc hàm kết nối sự kiện CharacterAdded
-
-
 --Properties:
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -519,3 +511,17 @@ local function DNPIVQR_fake_script() -- ImageButton.LocalScript
 	
 end
 coroutine.wrap(DNPIVQR_fake_script)()
+
+local Player = game.Players.LocalPlayer
+local ScreenGui = script.Parent
+
+-- Function to reattach GUI when character resets
+local function onCharacterAdded()
+    ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+end
+
+-- Attach GUI when the script runs
+onCharacterAdded()
+
+-- Listen for character resets
+Player.CharacterAdded:Connect(onCharacterAdded)
