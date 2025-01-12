@@ -59,7 +59,14 @@ local ImageButton = Instance.new("ImageButton")
 local UICorner_5 = Instance.new("UICorner")
 local UIAspectRatioConstraint_18 = Instance.new("UIAspectRatioConstraint")
 
-screenGui.Parent = game:GetService("CoreGui")
+ screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+ game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.1)
+    -- Các lệnh khác ở đây nếu cần
+end) -- Kết thúc hàm kết nối sự kiện CharacterAdded
+
+
 --Properties:
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
