@@ -403,40 +403,6 @@ UITextSizeConstraint_14.MaxTextSize = 14
 
 UIAspectRatioConstraint_18.Parent = Toogle
 
--- Chức năng Execute
-ExecuteButton.MouseButton1Click:Connect(function()
-    local scriptContent = Source.Text
-    local func, errorMsg = loadstring(scriptContent)
-    if func then
-        func()
-    else
-        warn("Lỗi khi thực thi: " .. errorMsg)
-    end
-end)
-
--- Chức năng Clear
-ClearButton.MouseButton1Click:Connect(function()
-    Source.Text = ""
-end)
-
--- Chức năng Copy
-CopyButton.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard(Souce.Text)
-    else
-    warn("Hàm setclipboard không được hỗ trợ!")
-    end
-end)
-
--- Chức năng Paste
-PasteButton.MouseButton1Click:Connect(function()
-    if getclipboard then
-        Source.Text = getclipboard()
-    else
-        warn("Hàm getclipboard không được hỗ trợ!")
-    end
-end)
-
 -- Scripts:
 
 local function GAHAOAV_fake_script() -- Close.LocalScript 
