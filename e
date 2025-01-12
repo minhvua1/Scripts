@@ -179,6 +179,21 @@ UITextSizeConstraint_4.MaxTextSize = 20
 UIAspectRatioConstraint_7.Parent = ExecuteButton
 UIAspectRatioConstraint_7.AspectRatio = 2.923
 
+-- Hàm thực thi script
+ExecuteButton.MouseButton1Click:Connect(function()
+    local scriptToExecute = Source.Text
+    if scriptToExecute ~= "" then
+        local success, result = pcall(function()
+            loadstring(scriptToExecute)()
+        end)
+        if not success then
+            warn("Script execution failed: " .. result)
+        end
+    else
+        warn("No script provided!")
+    end
+end)
+
 Clear.Name = "Clear"
 Clear.Parent = Down
 Clear.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
@@ -200,6 +215,10 @@ UITextSizeConstraint_5.MaxTextSize = 20
 
 UIAspectRatioConstraint_8.Parent = Clear
 UIAspectRatioConstraint_8.AspectRatio = 2.923
+
+Clear.MouseButton1Click:Connect(function()
+    Source.Text = ""
+end)
 
 Source.Name = "Source"
 Source.Parent = Down
@@ -247,6 +266,12 @@ UITextSizeConstraint_7.MaxTextSize = 20
 UIAspectRatioConstraint_10.Parent = CopyButton
 UIAspectRatioConstraint_10.AspectRatio = 2.923
 
+-- Hàm copy text
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(Source.Text)
+end)
+
+
 PasteButton.Name = "PasteButton"
 PasteButton.Parent = Down
 PasteButton.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
@@ -268,6 +293,10 @@ UITextSizeConstraint_8.MaxTextSize = 20
 
 UIAspectRatioConstraint_11.Parent = PasteButton
 UIAspectRatioConstraint_11.AspectRatio = 2.923
+
+PasteButton.MouseButton1Click:Connect(function()
+    Source.Text = getclipboard()
+end)
 
 Capy.Name = "Capy"
 Capy.Parent = Main
