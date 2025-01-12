@@ -27,15 +27,15 @@ local Clear = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local UITextSizeConstraint_5 = Instance.new("UITextSizeConstraint")
 local UIAspectRatioConstraint_8 = Instance.new("UIAspectRatioConstraint")
-local Source = Instance.new("TextBox")
-local UIAspectRatioConstraint_9 = Instance.new("UIAspectRatioConstraint")
-local UITextSizeConstraint_6 = Instance.new("UITextSizeConstraint")
 local CopyButton = Instance.new("TextButton")
 local UICorner_3 = Instance.new("UICorner")
-local UITextSizeConstraint_7 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_10 = Instance.new("UIAspectRatioConstraint")
+local UITextSizeConstraint_6 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_9 = Instance.new("UIAspectRatioConstraint")
 local PasteButton = Instance.new("TextButton")
 local UICorner_4 = Instance.new("UICorner")
+local UITextSizeConstraint_7 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_10 = Instance.new("UIAspectRatioConstraint")
+local Source = Instance.new("TextBox")
 local UITextSizeConstraint_8 = Instance.new("UITextSizeConstraint")
 local UIAspectRatioConstraint_11 = Instance.new("UIAspectRatioConstraint")
 local Capy = Instance.new("Frame")
@@ -55,9 +55,8 @@ local DarkDexV4 = Instance.new("TextButton")
 local UITextSizeConstraint_13 = Instance.new("UITextSizeConstraint")
 local UIAspectRatioConstraint_16 = Instance.new("UIAspectRatioConstraint")
 local UIAspectRatioConstraint_17 = Instance.new("UIAspectRatioConstraint")
-local Toogle = Instance.new("TextButton")
+local ImageButton = Instance.new("ImageButton")
 local UICorner_5 = Instance.new("UICorner")
-local UITextSizeConstraint_14 = Instance.new("UITextSizeConstraint")
 local UIAspectRatioConstraint_18 = Instance.new("UIAspectRatioConstraint")
 
 --Properties:
@@ -70,14 +69,15 @@ Main.Parent = ScreenGui
 Main.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
 Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Main.BorderSizePixel = 0
-Main.Position = UDim2.new(0.180171594, 0, 0.233064413, 0)
-Main.Size = UDim2.new(0.639656842, 0, 0.637450218, 0)
+Main.Position = UDim2.new(0.180171624, 0, 0.233064443, 0)
+Main.Size = UDim2.new(0.712106705, 0, 0.725099623, 0)
 
 Up.Name = "Up"
 Up.Parent = Main
 Up.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
 Up.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Up.BorderSizePixel = 0
+Up.Position = UDim2.new(4.08535215e-08, 0, 0, 0)
 Up.Size = UDim2.new(1, 0, 0.096874997, 0)
 
 Name.Name = "Name"
@@ -135,7 +135,7 @@ New.TextColor3 = Color3.fromRGB(0, 0, 0)
 New.TextScaled = true
 New.TextSize = 30.000
 New.TextWrapped = true
-New.TextYAlignment = Enum.TextYAlignment.Bottom
+New.TextYAlignment = Enum.TextYAlignment.Top
 
 UITextSizeConstraint_3.Parent = New
 UITextSizeConstraint_3.MaxTextSize = 30
@@ -179,19 +179,18 @@ UITextSizeConstraint_4.MaxTextSize = 20
 UIAspectRatioConstraint_7.Parent = ExecuteButton
 UIAspectRatioConstraint_7.AspectRatio = 2.923
 
--- Hàm thực thi script
 ExecuteButton.MouseButton1Click:Connect(function()
-    local scriptToExecute = Source.Text
-    if scriptToExecute ~= "" then
-        local success, result = pcall(function()
-            loadstring(scriptToExecute)()
-        end)
-        if not success then
-            warn("Script execution failed: " .. result)
-        end
-    else
-        warn("No script provided!")
-    end
+	local scriptToExecute = Source.Text
+	if scriptToExecute ~= "" then
+		local success, result = pcall(function()
+			loadstring(scriptToExecute)()
+		end)
+		if not success then
+			warn("Script execution failed: " .. result)
+		end
+	else
+		warn("No script provided!")
+	end
 end)
 
 Clear.Name = "Clear"
@@ -217,30 +216,8 @@ UIAspectRatioConstraint_8.Parent = Clear
 UIAspectRatioConstraint_8.AspectRatio = 2.923
 
 Clear.MouseButton1Click:Connect(function()
-    Source.Text = ""
+	Source.Text = ""
 end)
-
-Source.Name = "Source"
-Source.Parent = Down
-Source.BackgroundColor3 = Color3.fromRGB(172, 172, 172)
-Source.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Source.BorderSizePixel = 0
-Source.Position = UDim2.new(0.0163933523, 0, -4.92068148, 0)
-Source.Size = UDim2.new(0.819497049, 0, 4.75046873, 0)
-Source.Font = Enum.Font.SourceSans
-Source.Text = ""
-Source.TextColor3 = Color3.fromRGB(0, 0, 0)
-Source.TextScaled = false
-Source.TextSize = 20.000
-Source.TextWrapped = false
-Source.TextXAlignment = Enum.TextXAlignment.Left
-Source.TextYAlignment = Enum.TextYAlignment.Top
-
-UIAspectRatioConstraint_9.Parent = Source
-UIAspectRatioConstraint_9.AspectRatio = 2.404
-
-UITextSizeConstraint_6.Parent = Source
-UITextSizeConstraint_6.MaxTextSize = 10
 
 CopyButton.Name = "CopyButton"
 CopyButton.Parent = Down
@@ -258,17 +235,15 @@ CopyButton.TextWrapped = true
 
 UICorner_3.Parent = CopyButton
 
-UITextSizeConstraint_7.Parent = CopyButton
-UITextSizeConstraint_7.MaxTextSize = 20
+UITextSizeConstraint_6.Parent = CopyButton
+UITextSizeConstraint_6.MaxTextSize = 20
 
-UIAspectRatioConstraint_10.Parent = CopyButton
-UIAspectRatioConstraint_10.AspectRatio = 2.923
+UIAspectRatioConstraint_9.Parent = CopyButton
+UIAspectRatioConstraint_9.AspectRatio = 2.923
 
--- Hàm copy text
 CopyButton.MouseButton1Click:Connect(function()
-    setclipboard(Source.Text)
+	setclipboard(Source.Text)
 end)
-
 
 PasteButton.Name = "PasteButton"
 PasteButton.Parent = Down
@@ -286,15 +261,41 @@ PasteButton.TextWrapped = true
 
 UICorner_4.Parent = PasteButton
 
-UITextSizeConstraint_8.Parent = PasteButton
-UITextSizeConstraint_8.MaxTextSize = 20
+UITextSizeConstraint_7.Parent = PasteButton
+UITextSizeConstraint_7.MaxTextSize = 20
 
-UIAspectRatioConstraint_11.Parent = PasteButton
-UIAspectRatioConstraint_11.AspectRatio = 2.923
+UIAspectRatioConstraint_10.Parent = PasteButton
+UIAspectRatioConstraint_10.AspectRatio = 2.923
 
 PasteButton.MouseButton1Click:Connect(function()
-    Source.Text = getclipboard()
+	Source.Text = getclipboard()
 end)
+
+Source.Name = "Source"
+Source.Parent = Down
+Source.BackgroundColor3 = Color3.fromRGB(167, 167, 167)
+Source.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Source.BorderSizePixel = 0
+Source.Position = UDim2.new(0.0134128239, 0, -4.86008453, 0)
+Source.Size = UDim2.new(0.986587226, 0, 4.52899408, 0)
+Source.ClearTextOnFocus = false
+Source.Font = Enum.Font.SourceSans
+Source.MultiLine = true
+Source.PlaceholderColor3 = Color3.fromRGB(81, 81, 81)
+Source.PlaceholderText = "YOUR SCRIPT HERE"
+Source.Text = ""
+Source.TextColor3 = Color3.fromRGB(0, 0, 0)
+Source.TextScaled = true
+Source.TextSize = 14.000
+Source.TextWrapped = true
+Source.TextXAlignment = Enum.TextXAlignment.Left
+Source.TextYAlignment = Enum.TextYAlignment.Top
+
+UITextSizeConstraint_8.Parent = Source
+UITextSizeConstraint_8.MaxTextSize = 14
+
+UIAspectRatioConstraint_11.Parent = Source
+UIAspectRatioConstraint_11.AspectRatio = 2.718
 
 Capy.Name = "Capy"
 Capy.Parent = Main
@@ -408,31 +409,21 @@ UIAspectRatioConstraint_16.AspectRatio = 2.286
 UIAspectRatioConstraint_17.Parent = Capy
 UIAspectRatioConstraint_17.AspectRatio = 0.312
 
-Toogle.Name = "Toogle"
-Toogle.Parent = ScreenGui
-Toogle.BackgroundColor3 = Color3.fromRGB(94, 94, 94)
-Toogle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toogle.BorderSizePixel = 0
-Toogle.Position = UDim2.new(0.0243088659, 0, 0.28369385, 0)
-Toogle.Size = UDim2.new(0.0495710187, 0, 0.08652246, 0)
-Toogle.Font = Enum.Font.SourceSans
-Toogle.Text = "Toogle"
-Toogle.TextColor3 = Color3.fromRGB(12, 255, 101)
-Toogle.TextScaled = true
-Toogle.TextSize = 14.000
-Toogle.TextWrapped = true
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.0381315537, 0, 0.352589637, 0)
+ImageButton.Size = UDim2.new(0.0667302161, 0, 0.143426299, 0)
+ImageButton.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
 
-UICorner_5.CornerRadius = UDim.new(0, 5)
-UICorner_5.Parent = Toogle
+UICorner_5.Parent = ImageButton
 
-UITextSizeConstraint_14.Parent = Toogle
-UITextSizeConstraint_14.MaxTextSize = 14
-
-UIAspectRatioConstraint_18.Parent = Toogle
+UIAspectRatioConstraint_18.Parent = ImageButton
 
 -- Scripts:
 
-local function GAHAOAV_fake_script() -- Close.LocalScript 
+local function ENHRZVF_fake_script() -- Close.LocalScript 
 	local script = Instance.new('LocalScript', Close)
 
 	local player = game.Players.LocalPlayer
@@ -441,8 +432,8 @@ local function GAHAOAV_fake_script() -- Close.LocalScript
 		player.PlayerGui.ScreenGui.Main.Visible = false
 	end)
 end
-coroutine.wrap(GAHAOAV_fake_script)()
-local function LQZGS_fake_script() -- New.LocalScript 
+coroutine.wrap(ENHRZVF_fake_script)()
+local function QPRMBJ_fake_script() -- New.LocalScript 
 	local script = Instance.new('LocalScript', New)
 
 	local player = game.Players.LocalPlayer
@@ -470,16 +461,23 @@ local function LQZGS_fake_script() -- New.LocalScript
 	end)
 	
 end
-coroutine.wrap(LQZGS_fake_script)()
-local function ZHVADBM_fake_script() -- Main.LocalScript 
+coroutine.wrap(QPRMBJ_fake_script)()
+local function IWHJMVI_fake_script() -- Main.LocalScript 
 	local script = Instance.new('LocalScript', Main)
 
 	script.Parent.Active = true
 	script.Parent.Draggable= true
 end
-coroutine.wrap(ZHVADBM_fake_script)()
-local function WXCE_fake_script() -- Toogle.LocalScript 
-	local script = Instance.new('LocalScript', Toogle)
+coroutine.wrap(IWHJMVI_fake_script)()
+local function RGVPN_fake_script() -- ImageButton.LocalScript 
+	local script = Instance.new('LocalScript', ImageButton)
+
+	script.Parent.Active = true
+	script.Parent.Draggable= true
+end
+coroutine.wrap(RGVPN_fake_script)()
+local function DNPIVQR_fake_script() -- ImageButton.LocalScript 
+	local script = Instance.new('LocalScript', ImageButton)
 
 	local player = game.Players.LocalPlayer
 	
@@ -500,11 +498,4 @@ local function WXCE_fake_script() -- Toogle.LocalScript
 	end)
 	
 end
-coroutine.wrap(WXCE_fake_script)()
-local function XYPWPG_fake_script() -- Toogle.LocalScript 
-	local script = Instance.new('LocalScript', Toogle)
-
-	script.Parent.Active = true
-	script.Parent.Draggable= true
-end
-coroutine.wrap(XYPWPG_fake_script)()
+coroutine.wrap(DNPIVQR_fake_script)()
