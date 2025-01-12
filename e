@@ -427,7 +427,7 @@ ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
 ImageButton.Position = UDim2.new(0.0381315537, 0, 0.352589637, 0)
 ImageButton.Size = UDim2.new(0.0667302161, 0, 0.143426299, 0)
-ImageButton.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+ImageButton.Image = "rbxassetid://131585116023116"
 
 UICorner_5.Parent = ImageButton
 
