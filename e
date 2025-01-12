@@ -366,6 +366,12 @@ UITextSizeConstraint_11.MaxTextSize = 14
 UIAspectRatioConstraint_14.Parent = InfiniteYeild
 UIAspectRatioConstraint_14.AspectRatio = 2.286
 
+InfiniteYeild.MouseButton1Down:connect(function()
+
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+
+end)
+
 Fly.Name = "Fly"
 Fly.Parent = Capy
 Fly.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
@@ -385,6 +391,12 @@ UITextSizeConstraint_12.MaxTextSize = 14
 
 UIAspectRatioConstraint_15.Parent = Fly
 UIAspectRatioConstraint_15.AspectRatio = 2.286
+
+Fly.MouseButton1Down:connect(function()
+
+	loadstring(game:HttpGet('https://pastebin.com/raw/YSL3xKYU'))()
+
+end)
 
 DarkDexV4.Name = "Dark Dex V4"
 DarkDexV4.Parent = Capy
