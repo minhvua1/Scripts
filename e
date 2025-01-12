@@ -403,6 +403,40 @@ UITextSizeConstraint_14.MaxTextSize = 14
 
 UIAspectRatioConstraint_18.Parent = Toogle
 
+-- Chức năng Execute
+ExecuteButton.MouseButton1Click:Connect(function()
+    local scriptContent = Source.Text
+    local func, errorMsg = loadstring(scriptContent)
+    if func then
+        func()
+    else
+        warn("Lỗi khi thực thi: " .. errorMsg)
+    end
+end)
+
+-- Chức năng Clear
+ClearButton.MouseButton1Click:Connect(function()
+    Source.Text = ""
+end)
+
+-- Chức năng Copy
+CopyButton.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(Souce.Text)
+    else
+    warn("Hàm setclipboard không được hỗ trợ!")
+    end
+end)
+
+-- Chức năng Paste
+PasteButton.MouseButton1Click:Connect(function()
+    if getclipboard then
+        Source.Text = getclipboard()
+    else
+        warn("Hàm getclipboard không được hỗ trợ!")
+    end
+end)
+
 -- Scripts:
 
 local function GAHAOAV_fake_script() -- Close.LocalScript 
@@ -481,77 +515,3 @@ local function XYPWPG_fake_script() -- Toogle.LocalScript
 	script.Parent.Draggable= true
 end
 coroutine.wrap(XYPWPG_fake_script)()
-
-
--- Enhanced Script for Source TextBox
-
--- References
-local screenGui = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("ScreenGui")
-local main = screenGui and screenGui:FindFirstChild("Main")
-local source = main and main:FindFirstChild("Source")
-local executeButton = main and main:FindFirstChild("Down"):FindFirstChild("ExecuteButton")
-local clearButton = main and main:FindFirstChild("Down"):FindFirstChild("Clear")
-local copyButton = main and main:FindFirstChild("Down"):FindFirstChild("CopyButton")
-local pasteButton = main and main:FindFirstChild("Down"):FindFirstChild("PasteButton")
-
-if not source then
-    warn("Source TextBox not found!")
-    return
-end
-
--- Enable Text Wrapping in Source TextBox
-source.TextWrapped = true
-
--- Save Text on Focus Lost
-source.FocusLost:Connect(function()
-    if not source.Text then
-        warn("Source text is empty!")
-    end
-end)
-
--- Execute Button Functionality
-if executeButton then
-    executeButton.MouseButton1Click:Connect(function()
-        local code = source.Text
-        if code ~= "" then
-            local success, err = pcall(function()
-                loadstring(code)()
-            end)
-            if not success then
-                warn("Error executing code:", err)
-            end
-        else
-            warn("No code to execute!")
-        end
-    end)
-end
-
--- Clear Button Functionality
-if clearButton then
-    clearButton.MouseButton1Click:Connect(function()
-        source.Text = ""
-    end)
-end
-
--- Copy Button Functionality
-if copyButton then
-    copyButton.MouseButton1Click:Connect(function()
-        if source.Text ~= "" then
-            setclipboard(source.Text)
-        else
-            warn("No text to copy!")
-        end
-    end)
-end
-
--- Paste Button Functionality
-if pasteButton then
-    pasteButton.MouseButton1Click:Connect(function()
-        local clipboardText = game:GetService("GuiService"):GetClipboard()
-        if clipboardText then
-            source.Text = clipboardText
-        else
-            warn("No text in clipboard!")
-        end
-    end)
-end
