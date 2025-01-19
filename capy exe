@@ -134,7 +134,7 @@ ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.0774983689, 0, 0.204881012, 0)
+ImageButton.Position = UDim2.new(0.105223037, 0, 0.204881012, 0)
 ImageButton.Size = UDim2.new(0.0667302161, 0, 0.143426299, 0)
 ImageButton.Image = "rbxassetid://73735368929204"
 
@@ -271,7 +271,6 @@ ExecuteButton.MouseButton1Click:Connect(function()
 	end
 end)
 
-
 Clear.Name = "Clear"
 Clear.Parent = Down
 Clear.BackgroundColor3 = Color3.fromRGB(116, 116, 116)
@@ -349,6 +348,7 @@ UIAspectRatioConstraint_11.AspectRatio = 2.923
 PasteButton.MouseButton1Click:Connect(function()
 	Source.Text = getclipboard()
 end)
+
 
 Source.Name = "Source"
 Source.Parent = Down
@@ -853,14 +853,14 @@ UICorner_26.Parent = ScriptsFrame
 
 -- Scripts:
 
-local function ZRBQLA_fake_script() -- ImageButton.LocalScript 
+local function TGLCMDA_fake_script() -- ImageButton.LocalScript 
 	local script = Instance.new('LocalScript', ImageButton)
 
 	script.Parent.Active = true
 	script.Parent.Draggable= true
 end
-coroutine.wrap(ZRBQLA_fake_script)()
-local function TLRZUSG_fake_script() -- ImageButton.LocalScript 
+coroutine.wrap(TGLCMDA_fake_script)()
+local function UUAMZM_fake_script() -- ImageButton.LocalScript 
 	local script = Instance.new('LocalScript', ImageButton)
 
 	local player = game.Players.LocalPlayer
@@ -882,8 +882,8 @@ local function TLRZUSG_fake_script() -- ImageButton.LocalScript
 	end)
 	
 end
-coroutine.wrap(TLRZUSG_fake_script)()
-local function SKWUGG_fake_script() -- Close.LocalScript 
+coroutine.wrap(UUAMZM_fake_script)()
+local function DSHFRWA_fake_script() -- Close.LocalScript 
 	local script = Instance.new('LocalScript', Close)
 
 	local player = game.Players.LocalPlayer
@@ -892,8 +892,8 @@ local function SKWUGG_fake_script() -- Close.LocalScript
 		player.PlayerGui.ScreenGui.Main.Visible = false
 	end)
 end
-coroutine.wrap(SKWUGG_fake_script)()
-local function WGLHEIE_fake_script() -- New.LocalScript 
+coroutine.wrap(DSHFRWA_fake_script)()
+local function CPZS_fake_script() -- New.LocalScript 
 	local script = Instance.new('LocalScript', New)
 
 	local player = game.Players.LocalPlayer
@@ -921,15 +921,15 @@ local function WGLHEIE_fake_script() -- New.LocalScript
 	end)
 	
 end
-coroutine.wrap(WGLHEIE_fake_script)()
-local function JFYI_fake_script() -- Main.LocalScript 
+coroutine.wrap(CPZS_fake_script)()
+local function ILPNALM_fake_script() -- Main.LocalScript 
 	local script = Instance.new('LocalScript', Main)
 
 	script.Parent.Active = true
 	script.Parent.Draggable= true
 end
-coroutine.wrap(JFYI_fake_script)()
-local function PPSWQD_fake_script() -- ScriptsButton.LocalScript 
+coroutine.wrap(ILPNALM_fake_script)()
+local function EOPRG_fake_script() -- ScriptsButton.LocalScript 
 	local script = Instance.new('LocalScript', ScriptsButton)
 
 	local player = game.Players.LocalPlayer
@@ -951,8 +951,8 @@ local function PPSWQD_fake_script() -- ScriptsButton.LocalScript
 	end)
 	
 end
-coroutine.wrap(PPSWQD_fake_script)()
-local function AEHYP_fake_script() -- TextButton.LocalScript 
+coroutine.wrap(EOPRG_fake_script)()
+local function EBDO_fake_script() -- TextButton.LocalScript 
 	local script = Instance.new('LocalScript', TextButton)
 
 	local player = game.Players.LocalPlayer
@@ -961,11 +961,11 @@ local function AEHYP_fake_script() -- TextButton.LocalScript
 		player.PlayerGui.ScreenGui.ScriptsFrame.Visible = false
 	end)
 end
-coroutine.wrap(AEHYP_fake_script)()
-local function RLFUKVN_fake_script() -- ScriptsFrame.LocalScript 
+coroutine.wrap(EBDO_fake_script)()
+local function POFY_fake_script() -- ScriptsFrame.LocalScript 
 	local script = Instance.new('LocalScript', ScriptsFrame)
 
 	script.Parent.Active = true
 	script.Parent.Draggable= true
 end
-coroutine.wrap(RLFUKVN_fake_script)()
+coroutine.wrap(POFY_fake_script)()
