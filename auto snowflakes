@@ -1,56 +1,149 @@
--- Yêu cầu các dịch vụ cần thiết
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+-- Instances
 
--- Script autofarm (có chỉnh sửa)
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Name = Instance.new("TextLabel")
+local UICorner_2 = Instance.new("UICorner")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local onoff = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
+local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+local Name2 = Instance.new("TextLabel")
+local UICorner_4 = Instance.new("UICorner")
+local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+local TextLabel = Instance.new("TextLabel")
+local UITextSizeConstraint_4 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
+
+-- GUI Properties
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(6, 6, 6)
+Frame.BackgroundTransparency = 0.400
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.3, 0, 0.2, 0)
+Frame.Size = UDim2.new(0.22, 0, 0.42, 0)
+
+UICorner.CornerRadius = UDim.new(0.05, 0)
+UICorner.Parent = Frame
+
+Name.Name = "Name"
+Name.Parent = Frame
+Name.BackgroundColor3 = Color3.fromRGB(106, 106, 106)
+Name.BorderSizePixel = 0
+Name.Size = UDim2.new(1, 0, 0.2, 0)
+Name.Font = Enum.Font.DenkOne
+Name.Text = "Auto Collect Snowflakes"
+Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+Name.TextScaled = true
+Name.TextWrapped = true
+
+UICorner_2.Parent = Name
+
+UITextSizeConstraint.Parent = Name
+UITextSizeConstraint.MaxTextSize = 20
+
+UIAspectRatioConstraint.Parent = Name
+UIAspectRatioConstraint.AspectRatio = 5.512
+
+onoff.Name = "on/off"
+onoff.Parent = Frame
+onoff.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+onoff.BorderSizePixel = 0
+onoff.Position = UDim2.new(0.06, 0, 0.25, 0)
+onoff.Size = UDim2.new(0.88, 0, 0.24, 0)
+onoff.Font = Enum.Font.DenkOne
+onoff.Text = "Auto Farm Status: Off"
+onoff.TextColor3 = Color3.fromRGB(255, 255, 255)
+onoff.TextScaled = true
+onoff.TextWrapped = true
+
+UICorner_3.Parent = onoff
+
+UITextSizeConstraint_2.Parent = onoff
+UITextSizeConstraint_2.MaxTextSize = 20
+
+UIAspectRatioConstraint_2.Parent = onoff
+UIAspectRatioConstraint_2.AspectRatio = 4.000
+
+Name2.Name = "Name2"
+Name2.Parent = Frame
+Name2.BackgroundColor3 = Color3.fromRGB(106, 106, 106)
+Name2.BorderSizePixel = 0
+Name2.Position = UDim2.new(0.06, 0, 0.55, 0)
+Name2.Size = UDim2.new(0.88, 0, 0.24, 0)
+Name2.Font = Enum.Font.SourceSans
+Name2.Text = "Collected: 0"
+Name2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Name2.TextScaled = true
+Name2.TextWrapped = true
+
+UICorner_4.Parent = Name2
+
+UITextSizeConstraint_3.Parent = Name2
+UITextSizeConstraint_3.MaxTextSize = 14
+
+UIAspectRatioConstraint_3.Parent = Name2
+UIAspectRatioConstraint_3.AspectRatio = 4.000
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.Position = UDim2.new(0.06, 0, 0.78, 0)
+TextLabel.Size = UDim2.new(0.88, 0, 0.24, 0)
+TextLabel.Font = Enum.Font.DenkOne
+TextLabel.Text = "Made By Capy167"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextScaled = true
+TextLabel.TextWrapped = true
+
+UITextSizeConstraint_4.Parent = TextLabel
+UITextSizeConstraint_4.MaxTextSize = 14
+
+UIAspectRatioConstraint_4.Parent = TextLabel
+UIAspectRatioConstraint_4.AspectRatio = 4.000
+
+UIAspectRatioConstraint_5.Parent = Frame
+UIAspectRatioConstraint_5.AspectRatio = 1.066
+
+-- Script for draggable frame
+Frame.Active = true
+Frame.Draggable = true
+
+-- Autofarm Logic
+local TweenService = game:GetService("TweenService")
 local path = workspace:WaitForChild("Particles"):WaitForChild("Snowflakes")
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local info = "Please Take Caution when AutoFarming Snowflakes overnight!"
 local autofarmEnabled = false
-local collectTime = 4
-local waitTimeBetweenSnowflakes = 3
 local collectedCount = 0
-local startTime = tick()
-local pauseInterval = 300 -- 5 minutes in seconds
-local pauseDuration = 10 -- 10 seconds
-
-local function chatmsg(t, c)
-    game.StarterGui:SetCore("ChatMakeSystemMessage", {
-        Text = t;
-        Color = c
-    })
-end
-
-local function notif(ti, tx, du)
-    game.StarterGui:SetCore("SendNotification", {
-        Title = ti;
-        Text = tx;
-        Duration = du;
-    })
-end
 
 local function getsnowflake()
     local snowflakes = path:GetChildren()
     if #snowflakes > 0 then
         return snowflakes[math.random(1, #snowflakes)]
     else
-        notif("Autofarm", "No SnowFlakes Found", 5)
-        task.wait(0.1)
-        return getsnowflake()
+        return nil
     end
 end
 
 local function moveToSnowflake(target)
     if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-    
+
     local humanoidRootPart = character.HumanoidRootPart
     local distance = (humanoidRootPart.Position - target.Position).Magnitude
-    local time = distance / 50 -- Tốc độ di chuyển cơ bản (50 studs/s)
-    
-    -- Nếu lại gần (dưới 10 studs), di chuyển chậm lại
+    local time = distance / 50
     if distance < 10 then
-        time = distance / 20 -- Tốc độ chậm hơn (20 studs/s)
+        time = distance / 20
     end
 
     local tween = TweenService:Create(humanoidRootPart, TweenInfo.new(time, Enum.EasingStyle.Linear), {
@@ -61,7 +154,6 @@ local function moveToSnowflake(target)
     tween.Completed:Wait()
 end
 
--- Cập nhật nút bật/tắt
 onoff.MouseButton1Click:Connect(function()
     autofarmEnabled = not autofarmEnabled
     if autofarmEnabled then
@@ -73,25 +165,15 @@ onoff.MouseButton1Click:Connect(function()
     end
 end)
 
--- Vòng lặp chính
 while true do
     if autofarmEnabled then
         character = player.Character or player.CharacterAdded:Wait()
-        notif("Autofarm", "Collecting Snowflake", 2.5)
-        
-        local selectedsnowflake = getsnowflake()
-        moveToSnowflake(selectedsnowflake)
-        
-        -- Đợi trong thời gian thu thập
-        task.wait(collectTime)
-        collectedCount = collectedCount + 1
-        Name2.Text = "Collected: " .. collectedCount
-        task.wait(waitTimeBetweenSnowflakes)
-        
-        -- Tạm dừng mỗi 5 phút
-        local elapsedTime = tick() - startTime
-        if elapsedTime % pauseInterval < waitTimeBetweenSnowflakes then
-            task.wait(pauseDuration)
+        local snowflake = getsnowflake()
+        if snowflake then
+            moveToSnowflake(snowflake)
+            task.wait(1.5)
+            collectedCount += 1
+            Name2.Text = "Collected: " .. collectedCount
         end
     else
         task.wait(1)
