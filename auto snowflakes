@@ -1,0 +1,99 @@
+-- Yêu cầu các dịch vụ cần thiết
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+-- Script autofarm (có chỉnh sửa)
+local path = workspace:WaitForChild("Particles"):WaitForChild("Snowflakes")
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local info = "Please Take Caution when AutoFarming Snowflakes overnight!"
+local autofarmEnabled = false
+local collectTime = 4
+local waitTimeBetweenSnowflakes = 3
+local collectedCount = 0
+local startTime = tick()
+local pauseInterval = 300 -- 5 minutes in seconds
+local pauseDuration = 10 -- 10 seconds
+
+local function chatmsg(t, c)
+    game.StarterGui:SetCore("ChatMakeSystemMessage", {
+        Text = t;
+        Color = c
+    })
+end
+
+local function notif(ti, tx, du)
+    game.StarterGui:SetCore("SendNotification", {
+        Title = ti;
+        Text = tx;
+        Duration = du;
+    })
+end
+
+local function getsnowflake()
+    local snowflakes = path:GetChildren()
+    if #snowflakes > 0 then
+        return snowflakes[math.random(1, #snowflakes)]
+    else
+        notif("Autofarm", "No SnowFlakes Found", 5)
+        task.wait(0.1)
+        return getsnowflake()
+    end
+end
+
+local function moveToSnowflake(target)
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+    
+    local humanoidRootPart = character.HumanoidRootPart
+    local distance = (humanoidRootPart.Position - target.Position).Magnitude
+    local time = distance / 50 -- Tốc độ di chuyển cơ bản (50 studs/s)
+    
+    -- Nếu lại gần (dưới 10 studs), di chuyển chậm lại
+    if distance < 10 then
+        time = distance / 20 -- Tốc độ chậm hơn (20 studs/s)
+    end
+
+    local tween = TweenService:Create(humanoidRootPart, TweenInfo.new(time, Enum.EasingStyle.Linear), {
+        CFrame = target.CFrame + Vector3.new(0, 15, 0)
+    })
+
+    tween:Play()
+    tween.Completed:Wait()
+end
+
+-- Cập nhật nút bật/tắt
+onoff.MouseButton1Click:Connect(function()
+    autofarmEnabled = not autofarmEnabled
+    if autofarmEnabled then
+        onoff.Text = "Auto Farm Status: On"
+        onoff.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        onoff.Text = "Auto Farm Status: Off"
+        onoff.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    end
+end)
+
+-- Vòng lặp chính
+while true do
+    if autofarmEnabled then
+        character = player.Character or player.CharacterAdded:Wait()
+        notif("Autofarm", "Collecting Snowflake", 2.5)
+        
+        local selectedsnowflake = getsnowflake()
+        moveToSnowflake(selectedsnowflake)
+        
+        -- Đợi trong thời gian thu thập
+        task.wait(collectTime)
+        collectedCount = collectedCount + 1
+        Name2.Text = "Collected: " .. collectedCount
+        task.wait(waitTimeBetweenSnowflakes)
+        
+        -- Tạm dừng mỗi 5 phút
+        local elapsedTime = tick() - startTime
+        if elapsedTime % pauseInterval < waitTimeBetweenSnowflakes then
+            task.wait(pauseDuration)
+        end
+    else
+        task.wait(1)
+    end
+end
