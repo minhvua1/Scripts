@@ -1,26 +1,12 @@
--- Instances
+-- Instances (GUI)
 
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local Name = Instance.new("TextLabel")
-local UICorner_2 = Instance.new("UICorner")
-local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 local onoff = Instance.new("TextButton")
-local UICorner_3 = Instance.new("UICorner")
-local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
 local Name2 = Instance.new("TextLabel")
-local UICorner_4 = Instance.new("UICorner")
-local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
 local TextLabel = Instance.new("TextLabel")
-local UITextSizeConstraint_4 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
-local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
-
--- GUI Properties
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -28,132 +14,90 @@ ScreenGui.ResetOnSpawn = false
 
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(6, 6, 6)
-Frame.BackgroundTransparency = 0.400
-Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BorderSizePixel = 0
+Frame.BackgroundTransparency = 0.4
 Frame.Position = UDim2.new(0.3, 0, 0.2, 0)
-Frame.Size = UDim2.new(0.22, 0, 0.42, 0)
+Frame.Size = UDim2.new(0.2, 0, 0.4, 0)
 
 UICorner.CornerRadius = UDim.new(0.05, 0)
 UICorner.Parent = Frame
 
 Name.Name = "Name"
 Name.Parent = Frame
-Name.BackgroundColor3 = Color3.fromRGB(106, 106, 106)
-Name.BorderSizePixel = 0
 Name.Size = UDim2.new(1, 0, 0.2, 0)
 Name.Font = Enum.Font.DenkOne
 Name.Text = "Auto Collect Snowflakes"
 Name.TextColor3 = Color3.fromRGB(255, 255, 255)
 Name.TextScaled = true
-Name.TextWrapped = true
 
-UICorner_2.Parent = Name
-
-UITextSizeConstraint.Parent = Name
-UITextSizeConstraint.MaxTextSize = 20
-
-UIAspectRatioConstraint.Parent = Name
-UIAspectRatioConstraint.AspectRatio = 5.512
-
-onoff.Name = "on/off"
+onoff.Name = "onoff"
 onoff.Parent = Frame
-onoff.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-onoff.BorderSizePixel = 0
-onoff.Position = UDim2.new(0.06, 0, 0.25, 0)
-onoff.Size = UDim2.new(0.88, 0, 0.24, 0)
+onoff.Position = UDim2.new(0.1, 0, 0.25, 0)
+onoff.Size = UDim2.new(0.8, 0, 0.2, 0)
 onoff.Font = Enum.Font.DenkOne
 onoff.Text = "Auto Farm Status: Off"
 onoff.TextColor3 = Color3.fromRGB(255, 255, 255)
+onoff.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 onoff.TextScaled = true
-onoff.TextWrapped = true
-
-UICorner_3.Parent = onoff
-
-UITextSizeConstraint_2.Parent = onoff
-UITextSizeConstraint_2.MaxTextSize = 20
-
-UIAspectRatioConstraint_2.Parent = onoff
-UIAspectRatioConstraint_2.AspectRatio = 4.000
 
 Name2.Name = "Name2"
 Name2.Parent = Frame
-Name2.BackgroundColor3 = Color3.fromRGB(106, 106, 106)
-Name2.BorderSizePixel = 0
-Name2.Position = UDim2.new(0.06, 0, 0.55, 0)
-Name2.Size = UDim2.new(0.88, 0, 0.24, 0)
-Name2.Font = Enum.Font.SourceSans
+Name2.Position = UDim2.new(0.1, 0, 0.5, 0)
+Name2.Size = UDim2.new(0.8, 0, 0.2, 0)
+Name2.Font = Enum.Font.DenkOne
 Name2.Text = "Collected: 0"
 Name2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Name2.BackgroundColor3 = Color3.fromRGB(106, 106, 106)
 Name2.TextScaled = true
-Name2.TextWrapped = true
-
-UICorner_4.Parent = Name2
-
-UITextSizeConstraint_3.Parent = Name2
-UITextSizeConstraint_3.MaxTextSize = 14
-
-UIAspectRatioConstraint_3.Parent = Name2
-UIAspectRatioConstraint_3.AspectRatio = 4.000
 
 TextLabel.Parent = Frame
-TextLabel.BackgroundTransparency = 1.000
-TextLabel.Position = UDim2.new(0.06, 0, 0.78, 0)
-TextLabel.Size = UDim2.new(0.88, 0, 0.24, 0)
+TextLabel.Position = UDim2.new(0.1, 0, 0.75, 0)
+TextLabel.Size = UDim2.new(0.8, 0, 0.15, 0)
 TextLabel.Font = Enum.Font.DenkOne
 TextLabel.Text = "Made By Capy167"
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1
 TextLabel.TextScaled = true
-TextLabel.TextWrapped = true
 
-UITextSizeConstraint_4.Parent = TextLabel
-UITextSizeConstraint_4.MaxTextSize = 14
+-- Script logic
 
-UIAspectRatioConstraint_4.Parent = TextLabel
-UIAspectRatioConstraint_4.AspectRatio = 4.000
-
-UIAspectRatioConstraint_5.Parent = Frame
-UIAspectRatioConstraint_5.AspectRatio = 1.066
-
--- Script for draggable frame
-Frame.Active = true
-Frame.Draggable = true
-
--- Autofarm Logic
-local TweenService = game:GetService("TweenService")
 local path = workspace:WaitForChild("Particles"):WaitForChild("Snowflakes")
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local autofarmEnabled = false
 local collectedCount = 0
 
-local function getsnowflake()
+-- Create Base Part
+local basePart = Instance.new("Part")
+basePart.Size = Vector3.new(4, 0.5, 4)
+basePart.Anchored = true
+basePart.Transparency = 1
+basePart.CanCollide = true
+basePart.Parent = workspace
+
+-- TweenService
+local TweenService = game:GetService("TweenService")
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+local function getSnowflake()
     local snowflakes = path:GetChildren()
     if #snowflakes > 0 then
         return snowflakes[math.random(1, #snowflakes)]
-    else
-        return nil
     end
+    return nil
 end
 
-local function moveToSnowflake(target)
-    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-
-    local humanoidRootPart = character.HumanoidRootPart
-    local distance = (humanoidRootPart.Position - target.Position).Magnitude
-    local time = distance / 50
-    if distance < 10 then
-        time = distance / 20
-    end
-
-    local tween = TweenService:Create(humanoidRootPart, TweenInfo.new(time, Enum.EasingStyle.Linear), {
-        CFrame = target.CFrame + Vector3.new(0, 15, 0)
-    })
-
+local function moveTo(target)
+    local goal = {Position = target.Position - Vector3.new(0, 3, 0)}
+    local tween = TweenService:Create(basePart, tweenInfo, goal)
     tween:Play()
     tween.Completed:Wait()
+
+    -- Move character to Base Part
+    character:SetPrimaryPartCFrame(CFrame.new(basePart.Position + Vector3.new(0, 3, 0)))
 end
 
+-- Toggle Autofarm
 onoff.MouseButton1Click:Connect(function()
     autofarmEnabled = not autofarmEnabled
     if autofarmEnabled then
@@ -165,17 +109,23 @@ onoff.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Autofarm Loop
 while true do
     if autofarmEnabled then
-        character = player.Character or player.CharacterAdded:Wait()
-        local snowflake = getsnowflake()
+        local snowflake = getSnowflake()
         if snowflake then
-            moveToSnowflake(snowflake)
-            task.wait(1.5)
+            moveTo(snowflake)
+            task.wait(0.5) -- Wait for collection
             collectedCount += 1
             Name2.Text = "Collected: " .. collectedCount
+            snowflake:Destroy()
+        else
+            task.wait(1) -- Wait if no snowflakes found
         end
     else
         task.wait(1)
     end
+
+    -- Keep Base Part under character
+    basePart.Position = humanoidRootPart.Position - Vector3.new(0, 3, 0)
 end
