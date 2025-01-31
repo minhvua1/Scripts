@@ -1,41 +1,167 @@
-local MaxSpeed = 275 -- Studs per second
+local MaxSpeed = 275 -- Tốc độ di chuyển
 local LocalPlayer = game:GetService("Players").LocalPlayer
-local Locations = workspace._WorldOrigin.Locations
 local UncheckedChests = {}
 local FirstRun = true
 local wait = task.wait
-local startTime = tick()
 local gui = Instance.new("ScreenGui")
 gui.Parent = game:GetService("CoreGui")
 
+local collectChests = true -- Biến kiểm soát việc lượm rương
+
+-- Tạo một frame lớn chứa toàn bộ UI
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 250, 0, 150)  -- Giảm chiều cao phần dưới thêm một chút
+mainFrame.Position = UDim2.new(0.5, -125, 0.5, -75) -- Giữa màn hình
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.3
+mainFrame.Active = true -- Đảm bảo Frame có thể tương tác
+mainFrame.Draggable = false -- Sử dụng cơ chế kéo tùy chỉnh
+mainFrame.Parent = gui
+
+-- Kéo thả mainFrame
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+    end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+mainFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
 -- TextLabel để hiển thị số rương còn lại
 local chestsLabel = Instance.new("TextLabel")
-chestsLabel.Size = UDim2.new(0, 200, 0, 50)
+chestsLabel.Size = UDim2.new(0.5, -10, 0, 40)
 chestsLabel.Position = UDim2.new(0, 10, 0, 10)
 chestsLabel.BackgroundColor3 = Color3.new(0, 0, 0)
 chestsLabel.TextColor3 = Color3.new(1, 1, 1)
 chestsLabel.TextScaled = true
-chestsLabel.Parent = gui
+chestsLabel.Text = "Số rương còn lại: Đang tải..."
+chestsLabel.Parent = mainFrame
 
--- TextLabel để hiển thị thời gian còn lại
-local timerLabel = Instance.new("TextLabel")
-timerLabel.Size = UDim2.new(0, 200, 0, 50)
-timerLabel.Position = UDim2.new(0, 10, 0, 70)
-timerLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-timerLabel.TextColor3 = Color3.new(1, 1, 1)
-timerLabel.TextScaled = true
-timerLabel.Parent = gui
+-- Nút để bật/tắt lượm rương
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0.5, -10, 0, 40)
+toggleButton.Position = UDim2.new(0.5, 5, 0, 10)
+toggleButton.BackgroundColor3 = Color3.new(0, 1, 0)
+toggleButton.TextColor3 = Color3.new(0, 0, 0)
+toggleButton.TextScaled = true
+toggleButton.Text = "Tắt lụm rương"
+toggleButton.Parent = mainFrame
 
--- TextLabel để ghi credit
-local creditLabel = Instance.new("TextLabel")
-creditLabel.Size = UDim2.new(0, 200, 0, 50)
-creditLabel.Position = UDim2.new(0, 10, 0, 130)
-creditLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-creditLabel.TextColor3 = Color3.new(1, 1, 1)
-creditLabel.TextScaled = true
-creditLabel.Text = "Làm bởi Capy"
-creditLabel.Parent = gui
+toggleButton.MouseButton1Click:Connect(function()
+    collectChests = not collectChests
+    if collectChests then
+        toggleButton.Text = "Tắt lụm rương"
+        toggleButton.BackgroundColor3 = Color3.new(0, 1, 0)
+    else
+        toggleButton.Text = "Bật lụm rương"
+        toggleButton.BackgroundColor3 = Color3.new(1, 0, 0)
+    end
+end)
 
+-- Nút để đổi server
+-- Nút để đổi server
+local serverButton = Instance.new("TextButton")
+serverButton.Size = UDim2.new(0, 200, 0, 40)  -- Tăng chiều rộng của nút
+serverButton.Position = UDim2.new(0.5, -100, 0, 110)  -- Đặt dưới nút Tắt lượm rương
+serverButton.BackgroundColor3 = Color3.new(0, 0, 1)
+serverButton.TextColor3 = Color3.new(1, 1, 1)
+serverButton.TextScaled = true
+serverButton.Text = "Đổi Server"
+serverButton.Parent = mainFrame
+
+-- Bảng xác nhận đổi server
+local confirmationFrame = Instance.new("Frame")
+confirmationFrame.Size = UDim2.new(0, 400, 0, 200)
+confirmationFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
+confirmationFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+confirmationFrame.Visible = false
+confirmationFrame.Parent = gui
+
+local confirmationLabel = Instance.new("TextLabel")
+confirmationLabel.Size = UDim2.new(1, 0, 0.6, 0)
+confirmationLabel.Position = UDim2.new(0, 0, 0, 0)
+confirmationLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+confirmationLabel.TextColor3 = Color3.new(1, 1, 1)
+confirmationLabel.TextScaled = true
+confirmationLabel.Text = "Bạn chắc chắn muốn đổi server chưa? hãy kiểm tra inventory thật kỹ."
+confirmationLabel.Parent = confirmationFrame
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+closeButton.Position = UDim2.new(0.05, 0, 0.7, 0)
+closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
+closeButton.TextColor3 = Color3.new(0, 0, 0)
+closeButton.TextScaled = true
+closeButton.Text = "Hủy"
+closeButton.Parent = confirmationFrame
+
+local confirmButton = Instance.new("TextButton")
+confirmButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+confirmButton.Position = UDim2.new(0.55, 0, 0.7, 0)
+confirmButton.BackgroundColor3 = Color3.new(0, 1, 0)
+confirmButton.TextColor3 = Color3.new(0, 0, 0)
+confirmButton.TextScaled = true
+confirmButton.Text = "Đổi Server"
+confirmButton.Parent = confirmationFrame
+
+-- Hiển thị bảng xác nhận khi bấm nút đổi server
+serverButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = true
+end)
+
+-- Đóng bảng xác nhận khi bấm hủy
+closeButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = false
+end)
+
+-- Đổi server khi bấm xác nhận
+confirmButton.MouseButton1Click:Connect(function()
+    confirmationFrame.Visible = false
+    print("Đổi server...") -- Gọi đoạn script đổi server của bạn
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+ 
+    local _place = game.PlaceId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    
+    function ListServers(cursor)
+        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+        return Http:JSONDecode(Raw)
+    end
+    
+    local Server, Next; repeat
+        local Servers = ListServers(Next)
+        Server = Servers.data[1]
+        Next = Servers.nextPageCursor
+    until Server
+    
+    TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
+end)
+
+-- Hàm lấy thông tin nhân vật
 local function getCharacter()
     if not LocalPlayer.Character then
         LocalPlayer.CharacterAdded:Wait()
@@ -44,16 +170,7 @@ local function getCharacter()
     return LocalPlayer.Character
 end
 
-local function DistanceFromPlrSort(ObjectList)
-    local RootPart = getCharacter().HumanoidRootPart
-    table.sort(ObjectList, function(ChestA, ChestB)
-        local RootPos = RootPart.Position
-        local DistanceA = (RootPos - ChestA.Position).Magnitude
-        local DistanceB = (RootPos - ChestB.Position).Magnitude
-        return DistanceA < DistanceB
-    end)
-end
-
+-- Hàm lấy danh sách rương, sắp xếp theo khoảng cách
 local function getChestsSorted()
     if FirstRun then
         FirstRun = false
@@ -69,65 +186,49 @@ local function getChestsSorted()
             table.insert(Chests, Chest)
         end
     end
-    DistanceFromPlrSort(Chests)
+    table.sort(Chests, function(ChestA, ChestB)
+        local RootPos = getCharacter().HumanoidRootPart.Position
+        return (RootPos - ChestA.Position).Magnitude < (RootPos - ChestB.Position).Magnitude
+    end)
     return Chests
 end
 
-local function toggleNoclip(Toggle)
-    for _, v in pairs(getCharacter():GetChildren()) do
-        if v:IsA("BasePart") then
-            v.CanCollide = not Toggle
-        end
-    end
-end
-
-local function Teleport(Goal, Speed)
-    Speed = Speed or MaxSpeed
-    toggleNoclip(true)
+-- Hàm di chuyển đến rương
+local function TeleportToChest(Chest)
     local RootPart = getCharacter().HumanoidRootPart
-    local Magnitude = (RootPart.Position - Goal.Position).Magnitude
-    
-    while Magnitude >= 1 do
-        local Direction = (Goal.Position - RootPart.Position).unit
-        RootPart.CFrame = RootPart.CFrame + Direction * (Speed * wait())
-        Magnitude = (RootPart.Position - Goal.Position).Magnitude
+    local distance = (RootPart.Position - Chest.Position).Magnitude
+    while distance > 1 and collectChests do
+        local Direction = (Chest.Position - RootPart.Position).Unit
+        RootPart.CFrame = RootPart.CFrame + Direction *  (MaxSpeed * wait())
+        distance = (RootPart.Position - Chest.Position).Magnitude
     end
-    
-    toggleNoclip(false)
 end
 
-local function ServerHop()
-    print("Switching server...")
-    -- Add your server switch logic here
-end
-
-local function updateLabels()
+-- Hàm chính
+local function main()
     while true do
         local Chests = getChestsSorted()
         chestsLabel.Text = "Số rương còn lại: " .. #Chests
-        local remainingTime = math.max(0, 300 - math.floor(tick() - startTime))
-        timerLabel.Text = "Đổi server sau: " .. remainingTime .. " giây"
-        wait(1) -- Cập nhật mỗi giây
+
+        if #Chests > 0 and collectChests then
+            TeleportToChest(Chests[1])
+            wait(1) -- Tạm dừng sau khi lượm rương
+        elseif #Chests == 0 then
+            break -- Ngưng lượm rương nếu không còn rương
+        end
+        wait(1) -- Giảm tải vòng lặp để tránh bị lag
     end
 end
 
-local function main()
-    task.spawn(updateLabels) -- Chạy song song việc cập nhật label
-    while true do
-        if tick() - startTime > 300 then
-            ServerHop()
-            break
-        end
+-- Thêm phần "Làm bởi Capy" ở dưới cùng của mainFrame
+local capyLabel = Instance.new("TextLabel")
+capyLabel.Size = UDim2.new(1, 0, 0.2, 0)  -- Thêm phần này dưới cùng
+capyLabel.Position = UDim2.new(0, 0, 1, 0)
+capyLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+capyLabel.TextColor3 = Color3.new(1, 1, 1)
+capyLabel.TextScaled = true
+capyLabel.Text = "Làm bởi Capy167"
+capyLabel.Parent = mainFrame
 
-        local Chests = getChestsSorted()
-        if #Chests > 0 then
-            Teleport(Chests[1].CFrame)
-            wait(4) -- Pause for 4 seconds after collecting a chest
-        else
-            ServerHop()
-            break
-        end
-    end
-end
-
+-- Bắt đầu chương trình
 main()
