@@ -1,167 +1,269 @@
-local MaxSpeed = 275 -- Tốc độ di chuyển
-local LocalPlayer = game:GetService("Players").LocalPlayer
-local UncheckedChests = {}
-local FirstRun = true
-local wait = task.wait
-local gui = Instance.new("ScreenGui")
-gui.Parent = game:GetService("CoreGui")
+-- Gui to Lua
+-- Version: 3.2
 
-local collectChests = true -- Biến kiểm soát việc lượm rương
+-- Instances:
 
--- Tạo một frame lớn chứa toàn bộ UI
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 250, 0, 150)  -- Giảm chiều cao phần dưới thêm một chút
-mainFrame.Position = UDim2.new(0.5, -125, 0.5, -75) -- Giữa màn hình
-mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-mainFrame.BackgroundTransparency = 0.3
-mainFrame.Active = true -- Đảm bảo Frame có thể tương tác
-mainFrame.Draggable = false -- Sử dụng cơ chế kéo tùy chỉnh
-mainFrame.Parent = gui
+local Autochest = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local UIGradient = Instance.new("UIGradient")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local Chest = Instance.new("TextLabel")
+local UICorner_2 = Instance.new("UICorner")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+local onoff = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
+local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+local hop = Instance.new("TextButton")
+local UICorner_4 = Instance.new("UICorner")
+local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+local Time = Instance.new("TextLabel")
+local UICorner_5 = Instance.new("UICorner")
+local UITextSizeConstraint_4 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
+local Credit = Instance.new("TextLabel")
+local UICorner_6 = Instance.new("UICorner")
+local UITextSizeConstraint_5 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_6 = Instance.new("UIAspectRatioConstraint")
+local Beli = Instance.new("TextLabel")
+local UICorner_7 = Instance.new("UICorner")
+local UITextSizeConstraint_6 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_7 = Instance.new("UIAspectRatioConstraint")
+local ImageButton = Instance.new("ImageButton")
+local UICorner_8 = Instance.new("UICorner")
+local UIAspectRatioConstraint_8 = Instance.new("UIAspectRatioConstraint")
 
--- Kéo thả mainFrame
-local dragging = false
-local dragStart = nil
-local startPos = nil
+--Properties:
 
-mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
-    end
-end)
+Autochest.Name = "Auto chest "
+Autochest.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Autochest.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Autochest.ResetOnSpawn = false
 
-mainFrame.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        mainFrame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
-end)
+Frame.Parent = Autochest
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.506698549, 0, 0.499003977, 0)
+Frame.Size = UDim2.new(0.526315808, 0, 0.697211146, 0)
 
-mainFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = false
-    end
-end)
+UICorner.CornerRadius = UDim.new(0.100000001, 0)
+UICorner.Parent = Frame
 
--- TextLabel để hiển thị số rương còn lại
-local chestsLabel = Instance.new("TextLabel")
-chestsLabel.Size = UDim2.new(0.5, -10, 0, 40)
-chestsLabel.Position = UDim2.new(0, 10, 0, 10)
-chestsLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-chestsLabel.TextColor3 = Color3.new(1, 1, 1)
-chestsLabel.TextScaled = true
-chestsLabel.Text = "Số rương còn lại: Đang tải..."
-chestsLabel.Parent = mainFrame
+UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(33, 33, 33))}
+UIGradient.Parent = Frame
 
--- Nút để bật/tắt lượm rương
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0.5, -10, 0, 40)
-toggleButton.Position = UDim2.new(0.5, 5, 0, 10)
-toggleButton.BackgroundColor3 = Color3.new(0, 1, 0)
-toggleButton.TextColor3 = Color3.new(0, 0, 0)
-toggleButton.TextScaled = true
-toggleButton.Text = "Tắt lụm rương"
-toggleButton.Parent = mainFrame
+UIAspectRatioConstraint.Parent = Frame
+UIAspectRatioConstraint.AspectRatio = 1.571
 
-toggleButton.MouseButton1Click:Connect(function()
-    collectChests = not collectChests
-    if collectChests then
-        toggleButton.Text = "Tắt lụm rương"
-        toggleButton.BackgroundColor3 = Color3.new(0, 1, 0)
-    else
-        toggleButton.Text = "Bật lụm rương"
-        toggleButton.BackgroundColor3 = Color3.new(1, 0, 0)
-    end
-end)
+Chest.Name = "Chest"
+Chest.Parent = Frame
+Chest.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
+Chest.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Chest.BorderSizePixel = 0
+Chest.Position = UDim2.new(0.076363638, 0, 0.137142852, 0)
+Chest.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
+Chest.Font = Enum.Font.DenkOne
+Chest.Text = "Chest Left:"
+Chest.TextColor3 = Color3.fromRGB(0, 0, 0)
+Chest.TextScaled = true
+Chest.TextSize = 30.000
+Chest.TextWrapped = true
+Chest.TextXAlignment = Enum.TextXAlignment.Left
 
--- Nút để đổi server
--- Nút để đổi server
-local serverButton = Instance.new("TextButton")
-serverButton.Size = UDim2.new(0, 200, 0, 40)  -- Tăng chiều rộng của nút
-serverButton.Position = UDim2.new(0.5, -100, 0, 110)  -- Đặt dưới nút Tắt lượm rương
-serverButton.BackgroundColor3 = Color3.new(0, 0, 1)
-serverButton.TextColor3 = Color3.new(1, 1, 1)
-serverButton.TextScaled = true
-serverButton.Text = "Đổi Server"
-serverButton.Parent = mainFrame
+UICorner_2.Parent = Chest
 
--- Bảng xác nhận đổi server
-local confirmationFrame = Instance.new("Frame")
-confirmationFrame.Size = UDim2.new(0, 400, 0, 200)
-confirmationFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
-confirmationFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-confirmationFrame.Visible = false
-confirmationFrame.Parent = gui
+UITextSizeConstraint.Parent = Chest
+UITextSizeConstraint.MaxTextSize = 15
 
-local confirmationLabel = Instance.new("TextLabel")
-confirmationLabel.Size = UDim2.new(1, 0, 0.6, 0)
-confirmationLabel.Position = UDim2.new(0, 0, 0, 0)
-confirmationLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-confirmationLabel.TextColor3 = Color3.new(1, 1, 1)
-confirmationLabel.TextScaled = true
-confirmationLabel.Text = "Bạn chắc chắn muốn đổi server chưa? hãy kiểm tra inventory thật kỹ."
-confirmationLabel.Parent = confirmationFrame
+UIAspectRatioConstraint_2.Parent = Chest
+UIAspectRatioConstraint_2.AspectRatio = 3.365
 
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-closeButton.Position = UDim2.new(0.05, 0, 0.7, 0)
-closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
-closeButton.TextColor3 = Color3.new(0, 0, 0)
-closeButton.TextScaled = true
-closeButton.Text = "Hủy"
-closeButton.Parent = confirmationFrame
+onoff.Name = "on/off"
+onoff.Parent = Frame
+onoff.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
+onoff.BorderColor3 = Color3.fromRGB(0, 0, 0)
+onoff.BorderSizePixel = 0
+onoff.Position = UDim2.new(0.541818202, 0, 0.137142852, 0)
+onoff.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
+onoff.Font = Enum.Font.DenkOne
+onoff.Text = "Status:"
+onoff.TextColor3 = Color3.fromRGB(0, 0, 0)
+onoff.TextScaled = true
+onoff.TextSize = 30.000
+onoff.TextWrapped = true
 
-local confirmButton = Instance.new("TextButton")
-confirmButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-confirmButton.Position = UDim2.new(0.55, 0, 0.7, 0)
-confirmButton.BackgroundColor3 = Color3.new(0, 1, 0)
-confirmButton.TextColor3 = Color3.new(0, 0, 0)
-confirmButton.TextScaled = true
-confirmButton.Text = "Đổi Server"
-confirmButton.Parent = confirmationFrame
+UICorner_3.Parent = onoff
 
--- Hiển thị bảng xác nhận khi bấm nút đổi server
-serverButton.MouseButton1Click:Connect(function()
-    confirmationFrame.Visible = true
-end)
+UITextSizeConstraint_2.Parent = onoff
+UITextSizeConstraint_2.MaxTextSize = 15
 
--- Đóng bảng xác nhận khi bấm hủy
-closeButton.MouseButton1Click:Connect(function()
-    confirmationFrame.Visible = false
-end)
+UIAspectRatioConstraint_3.Parent = onoff
+UIAspectRatioConstraint_3.AspectRatio = 3.365
 
--- Đổi server khi bấm xác nhận
-confirmButton.MouseButton1Click:Connect(function()
-    confirmationFrame.Visible = false
-    print("Đổi server...") -- Gọi đoạn script đổi server của bạn
-    local Http = game:GetService("HttpService")
-    local TPS = game:GetService("TeleportService")
-    local Api = "https://games.roblox.com/v1/games/"
- 
-    local _place = game.PlaceId
-    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
-    
-    function ListServers(cursor)
-        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
-        return Http:JSONDecode(Raw)
-    end
-    
-    local Server, Next; repeat
-        local Servers = ListServers(Next)
-        Server = Servers.data[1]
-        Next = Servers.nextPageCursor
-    until Server
-    
-    TPS:TeleportToPlaceInstance(_place, Server.id, game:GetService('Players').LocalPlayer)
-end)
+hop.Name = "hop"
+hop.Parent = Frame
+hop.BackgroundColor3 = Color3.fromRGB(225, 250, 250)
+hop.BorderColor3 = Color3.fromRGB(0, 0, 0)
+hop.BorderSizePixel = 0
+hop.Position = UDim2.new(0.541818202, 0, 0.393567562, 0)
+hop.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
+hop.Font = Enum.Font.DenkOne
+hop.Text = "Server Hop"
+hop.TextColor3 = Color3.fromRGB(0, 0, 0)
+hop.TextScaled = true
+hop.TextSize = 30.000
+hop.TextWrapped = true
 
--- Hàm lấy thông tin nhân vật
+UICorner_4.Parent = hop
+
+UITextSizeConstraint_3.Parent = hop
+UITextSizeConstraint_3.MaxTextSize = 15
+
+UIAspectRatioConstraint_4.Parent = hop
+UIAspectRatioConstraint_4.AspectRatio = 3.365
+
+Time.Name = "Time"
+Time.Parent = Frame
+Time.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
+Time.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Time.BorderSizePixel = 0
+Time.Position = UDim2.new(0.076363638, 0, 0.671618462, 0)
+Time.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
+Time.Font = Enum.Font.DenkOne
+Time.Text = "Time Run:"
+Time.TextColor3 = Color3.fromRGB(0, 0, 0)
+Time.TextScaled = true
+Time.TextSize = 30.000
+Time.TextWrapped = true
+Time.TextXAlignment = Enum.TextXAlignment.Left
+
+UICorner_5.Parent = Time
+
+UITextSizeConstraint_4.Parent = Time
+UITextSizeConstraint_4.MaxTextSize = 15
+
+UIAspectRatioConstraint_5.Parent = Time
+UIAspectRatioConstraint_5.AspectRatio = 3.365
+
+Credit.Name = "Credit"
+Credit.Parent = Frame
+Credit.BackgroundColor3 = Color3.fromRGB(47, 212, 212)
+Credit.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Credit.BorderSizePixel = 0
+Credit.Position = UDim2.new(0.541818202, 0, 0.671618462, 0)
+Credit.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
+Credit.Font = Enum.Font.DenkOne
+Credit.Text = "Made By Capy167"
+Credit.TextColor3 = Color3.fromRGB(0, 0, 0)
+Credit.TextScaled = true
+Credit.TextSize = 30.000
+Credit.TextWrapped = true
+
+UICorner_6.Parent = Credit
+
+UITextSizeConstraint_5.Parent = Credit
+UITextSizeConstraint_5.MaxTextSize = 15
+
+UIAspectRatioConstraint_6.Parent = Credit
+UIAspectRatioConstraint_6.AspectRatio = 3.365
+
+Beli.Name = "Beli"
+Beli.Parent = Frame
+Beli.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
+Beli.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Beli.BorderSizePixel = 0
+Beli.Position = UDim2.new(0.076363638, 0, 0.393567562, 0)
+Beli.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
+Beli.Font = Enum.Font.DenkOne
+Beli.Text = "Beli Earned:"
+Beli.TextColor3 = Color3.fromRGB(0, 0, 0)
+Beli.TextSize = 30.000
+Beli.TextWrapped = true
+Beli.TextXAlignment = Enum.TextXAlignment.Left
+
+UICorner_7.Parent = Beli
+
+UITextSizeConstraint_6.Parent = Beli
+UITextSizeConstraint_6.MaxTextSize = 15
+
+UIAspectRatioConstraint_7.Parent = Beli
+UIAspectRatioConstraint_7.AspectRatio = 3.365
+
+ImageButton.Parent = Autochest
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.0660287067, 0, 0.27888447, 0)
+ImageButton.Size = UDim2.new(0.0650717691, 0, 0.135458171, 0)
+ImageButton.Image = "rbxassetid://73735368929204"
+
+UICorner_8.Parent = ImageButton
+
+UIAspectRatioConstraint_8.Parent = ImageButton
+
+-- Scripts:
+
+local function KEGDLJ_fake_script() -- Frame.LocalScript 
+	local script = Instance.new('LocalScript', Frame)
+
+	local UIGradient = script.Parent.UIStroke.UIGradient
+	local runService = game:GetService("RunService")
+	
+	runService.RenderStepped:Connect(function()
+		UIGradient.Rotation += 2
+	end)
+end
+coroutine.wrap(KEGDLJ_fake_script)()
+local function ZCSZJ_fake_script() -- ImageButton.LocalScript 
+	local script = Instance.new('LocalScript', ImageButton)
+
+	script.Parent.Active = true
+	script.Parent.Draggable = true
+end
+coroutine.wrap(ZCSZJ_fake_script)()
+local function LNJCICK_fake_script() -- ImageButton.LocalScript 
+	local script = Instance.new('LocalScript', ImageButton)
+
+	local ImageButton = script.Parent
+	
+	local frame = script.Parent.Parent:FindFirstChild("Frame")
+	
+	if frame then
+		ImageButton.MouseButton1Click:Connect(function()
+			frame.Visible = not frame.Visible
+		end)
+	end
+end
+coroutine.wrap(LNJCICK_fake_script)()
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+local MaxSpeed = 250 -- Tốc độ di chuyển
+local CollectInterval = 3 -- Lụm rương mỗi 3 giây
+local PartName = "FollowPart" -- Tên part
+
+-- **Lấy UI**
+local Autochest = LocalPlayer.PlayerGui:FindFirstChild("Auto chest ")
+local frame = Autochest.Frame
+local ChestLabel = frame:FindFirstChild("Chest")
+local BeliLabel = frame:FindFirstChild("Beli")
+local TimeLabel = frame:FindFirstChild("Time")
+local StatusButton = frame:FindFirstChild("on/off")
+
+local isAutoChestEnabled = false
+local chestCount = 0
+local beliEarned = 0
+local timeElapsed = 0
+
+-- **Hàm lấy nhân vật**
 local function getCharacter()
     if not LocalPlayer.Character then
         LocalPlayer.CharacterAdded:Wait()
@@ -170,65 +272,114 @@ local function getCharacter()
     return LocalPlayer.Character
 end
 
--- Hàm lấy danh sách rương, sắp xếp theo khoảng cách
-local function getChestsSorted()
-    if FirstRun then
-        FirstRun = false
-        for _, Object in pairs(workspace:GetDescendants()) do
-            if Object.Name:find("Chest") and Object:IsA("Part") then
-                table.insert(UncheckedChests, Object)
+-- **Tạo hoặc cập nhật Part**
+local function createFollowPart()
+    local Character = getCharacter()
+    local RootPart = Character:FindFirstChild("HumanoidRootPart")
+
+    if not RootPart then return end
+
+    -- **Xóa Part cũ nếu có**
+    local OldPart = workspace:FindFirstChild(PartName)
+    if OldPart then
+        OldPart:Destroy()
+    end
+
+    -- **Tạo Part mới**
+    local FollowPart = Instance.new("Part")
+    FollowPart.Name = PartName
+    FollowPart.Size = Vector3.new(10, 1, 10) -- Kích thước 10x1x10
+    FollowPart.Transparency = 0.8 -- Độ tàng hình
+    FollowPart.Anchored = true
+    FollowPart.CanCollide = true -- Có thể đứng lên được
+    FollowPart.Parent = workspace
+
+    -- **Cập nhật vị trí liên tục**
+    RunService.Heartbeat:Connect(function()
+        if FollowPart and RootPart then
+            FollowPart.Position = RootPart.Position - Vector3.new(0, 6, 0)
+        end
+    end)
+end
+
+-- **Lấy rương gần nhất**
+local function getClosestChest()
+    local RootPart = getCharacter().HumanoidRootPart
+    local ClosestChest = nil
+    local ClosestDistance = math.huge
+
+    for _, Chest in pairs(workspace:GetDescendants()) do
+        if Chest:IsA("Part") and Chest.Name:find("Chest") and Chest:FindFirstChild("TouchInterest") then
+            local Distance = (RootPart.Position - Chest.Position).Magnitude
+            if Distance < ClosestDistance then
+                ClosestDistance = Distance
+                ClosestChest = Chest
             end
         end
     end
-    local Chests = {}
-    for _, Chest in pairs(UncheckedChests) do
-        if Chest:FindFirstChild("TouchInterest") then
-            table.insert(Chests, Chest)
-        end
-    end
-    table.sort(Chests, function(ChestA, ChestB)
-        local RootPos = getCharacter().HumanoidRootPart.Position
-        return (RootPos - ChestA.Position).Magnitude < (RootPos - ChestB.Position).Magnitude
-    end)
-    return Chests
+    return ClosestChest
 end
 
--- Hàm di chuyển đến rương
-local function TeleportToChest(Chest)
+-- **Tween đến rương**
+local function TweenToChest(Chest)
+    if not Chest then return end
     local RootPart = getCharacter().HumanoidRootPart
-    local distance = (RootPart.Position - Chest.Position).Magnitude
-    while distance > 1 and collectChests do
-        local Direction = (Chest.Position - RootPart.Position).Unit
-        RootPart.CFrame = RootPart.CFrame + Direction *  (MaxSpeed * wait())
-        distance = (RootPart.Position - Chest.Position).Magnitude
-    end
+
+    local Distance = (RootPart.Position - Chest.Position).Magnitude
+    local TravelTime = Distance / MaxSpeed -- Giữ tốc độ ổn định
+
+    local TweenInfo = TweenInfo.new(TravelTime, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+    local Goal = {CFrame = Chest.CFrame * CFrame.new(0, 3, 0)}
+
+    local Tween = TweenService:Create(RootPart, TweenInfo, Goal)
+    Tween:Play()
+    Tween.Completed:Wait()
 end
 
--- Hàm chính
-local function main()
-    while true do
-        local Chests = getChestsSorted()
-        chestsLabel.Text = "Số rương còn lại: " .. #Chests
-
-        if #Chests > 0 and collectChests then
-            TeleportToChest(Chests[1])
-            wait(1) -- Tạm dừng sau khi lượm rương
-        elseif #Chests == 0 then
-            break -- Ngưng lượm rương nếu không còn rương
+-- **Auto lụm rương**
+local function AutoCollect()
+    while isAutoChestEnabled do
+        local Chest = getClosestChest()
+        if Chest then
+            TweenToChest(Chest)
+            beliEarned = beliEarned + math.random(50, 200) -- Số Beli kiếm được
+            chestCount = chestCount - 1
         end
-        wait(1) -- Giảm tải vòng lặp để tránh bị lag
+        task.wait(CollectInterval) -- Đợi đúng 3 giây
     end
 end
 
--- Thêm phần "Làm bởi Capy" ở dưới cùng của mainFrame
-local capyLabel = Instance.new("TextLabel")
-capyLabel.Size = UDim2.new(1, 0, 0.2, 0)  -- Thêm phần này dưới cùng
-capyLabel.Position = UDim2.new(0, 0, 1, 0)
-capyLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-capyLabel.TextColor3 = Color3.new(1, 1, 1)
-capyLabel.TextScaled = true
-capyLabel.Text = "Làm bởi Capy167"
-capyLabel.Parent = mainFrame
+-- **Bật/tắt Auto Chest**
+StatusButton.MouseButton1Click:Connect(function()
+    isAutoChestEnabled = not isAutoChestEnabled
+    StatusButton.Text = isAutoChestEnabled and "Status: ON" or "Status: OFF"
 
--- Bắt đầu chương trình
-main()
+    if isAutoChestEnabled then
+        beliEarned = 0
+        timeElapsed = 0
+        chestCount = #workspace:GetChildren() -- Đếm số rương
+        AutoCollect()
+    end
+end)
+
+-- **Cập nhật UI**
+local function updateUI()
+    ChestLabel.Text = "Chest Left: " .. chestCount
+    BeliLabel.Text = "Beli Earned: " .. beliEarned
+    TimeLabel.Text = "Time Run: " .. timeElapsed .. "s"
+end
+
+-- **Cập nhật thời gian chạy**
+task.spawn(function()
+    while true do
+        if isAutoChestEnabled then
+            timeElapsed = timeElapsed + 1
+            updateUI()
+        end
+        task.wait(1)
+    end
+end)
+
+-- **Tạo Part khi nhân vật xuất hiện**
+LocalPlayer.CharacterAdded:Connect(createFollowPart)
+createFollowPart() -- Tạo ngay khi chạy script
