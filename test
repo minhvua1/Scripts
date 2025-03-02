@@ -3,71 +3,47 @@
 
 -- Instances:
 
-local Autochest = Instance.new("ScreenGui")
+local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
-local UIGradient = Instance.new("UIGradient")
-local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 local Chest = Instance.new("TextLabel")
-local UICorner_2 = Instance.new("UICorner")
+local UICorner = Instance.new("UICorner")
 local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
-local onoff = Instance.new("TextButton")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local UICorner_2 = Instance.new("UICorner")
+local Toggle = Instance.new("TextLabel")
 local UICorner_3 = Instance.new("UICorner")
 local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
 local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
-local hop = Instance.new("TextButton")
-local UICorner_4 = Instance.new("UICorner")
-local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
-local Time = Instance.new("TextLabel")
-local UICorner_5 = Instance.new("UICorner")
-local UITextSizeConstraint_4 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
-local Credit = Instance.new("TextLabel")
-local UICorner_6 = Instance.new("UICorner")
-local UITextSizeConstraint_5 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_6 = Instance.new("UIAspectRatioConstraint")
-local Beli = Instance.new("TextLabel")
-local UICorner_7 = Instance.new("UICorner")
-local UITextSizeConstraint_6 = Instance.new("UITextSizeConstraint")
-local UIAspectRatioConstraint_7 = Instance.new("UIAspectRatioConstraint")
 local ImageButton = Instance.new("ImageButton")
-local UICorner_8 = Instance.new("UICorner")
-local UIAspectRatioConstraint_8 = Instance.new("UIAspectRatioConstraint")
+local UICorner_4 = Instance.new("UICorner")
+local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+local Hop = Instance.new("TextButton")
+local UICorner_5 = Instance.new("UICorner")
+local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
 
 --Properties:
 
-Autochest.Name = "Auto chest "
-Autochest.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-Autochest.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Autochest.ResetOnSpawn = false
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
 
-Frame.Parent = Autochest
-Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(94, 94, 94)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.506698549, 0, 0.499003977, 0)
-Frame.Size = UDim2.new(0.526315808, 0, 0.697211146, 0)
-
-UICorner.CornerRadius = UDim.new(0.100000001, 0)
-UICorner.Parent = Frame
-
-UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(33, 33, 33))}
-UIGradient.Parent = Frame
-
-UIAspectRatioConstraint.Parent = Frame
-UIAspectRatioConstraint.AspectRatio = 1.571
+Frame.Position = UDim2.new(0.193301439, 0, 0.129482076, 0)
+Frame.Size = UDim2.new(0.612440169, 0, 0.179282874, 0)
 
 Chest.Name = "Chest"
 Chest.Parent = Frame
-Chest.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
+Chest.BackgroundColor3 = Color3.fromRGB(185, 185, 185)
 Chest.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Chest.BorderSizePixel = 0
-Chest.Position = UDim2.new(0.076363638, 0, 0.137142852, 0)
-Chest.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
-Chest.Font = Enum.Font.DenkOne
+Chest.Position = UDim2.new(0.0117845116, 0, 0.078651689, 0)
+Chest.Size = UDim2.new(0.3125, 0, 0.800000012, 0)
+Chest.Font = Enum.Font.SourceSans
 Chest.Text = "Chest Left:"
 Chest.TextColor3 = Color3.fromRGB(0, 0, 0)
 Chest.TextScaled = true
@@ -75,158 +51,88 @@ Chest.TextSize = 30.000
 Chest.TextWrapped = true
 Chest.TextXAlignment = Enum.TextXAlignment.Left
 
-UICorner_2.Parent = Chest
+UICorner.Parent = Chest
 
 UITextSizeConstraint.Parent = Chest
-UITextSizeConstraint.MaxTextSize = 15
+UITextSizeConstraint.MaxTextSize = 20
 
-UIAspectRatioConstraint_2.Parent = Chest
-UIAspectRatioConstraint_2.AspectRatio = 3.365
+UIAspectRatioConstraint.Parent = Chest
+UIAspectRatioConstraint.AspectRatio = 2.778
 
-onoff.Name = "on/off"
-onoff.Parent = Frame
-onoff.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
-onoff.BorderColor3 = Color3.fromRGB(0, 0, 0)
-onoff.BorderSizePixel = 0
-onoff.Position = UDim2.new(0.541818202, 0, 0.137142852, 0)
-onoff.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
-onoff.Font = Enum.Font.DenkOne
-onoff.Text = "Status:"
-onoff.TextColor3 = Color3.fromRGB(0, 0, 0)
-onoff.TextScaled = true
-onoff.TextSize = 30.000
-onoff.TextWrapped = true
+UICorner_2.Parent = Frame
 
-UICorner_3.Parent = onoff
+Toggle.Name = "Toggle"
+Toggle.Parent = Frame
+Toggle.BackgroundColor3 = Color3.fromRGB(185, 185, 185)
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.BorderSizePixel = 0
+Toggle.Position = UDim2.new(0.344412893, 0, 0.078651689, 0)
+Toggle.Size = UDim2.new(0.3125, 0, 0.800000012, 0)
+Toggle.Font = Enum.Font.SourceSans
+Toggle.Text = "Status: "
+Toggle.TextColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.TextScaled = true
+Toggle.TextSize = 30.000
+Toggle.TextWrapped = true
+Toggle.TextXAlignment = Enum.TextXAlignment.Left
 
-UITextSizeConstraint_2.Parent = onoff
-UITextSizeConstraint_2.MaxTextSize = 15
+UICorner_3.Parent = Toggle
 
-UIAspectRatioConstraint_3.Parent = onoff
-UIAspectRatioConstraint_3.AspectRatio = 3.365
+UITextSizeConstraint_2.Parent = Toggle
+UITextSizeConstraint_2.MaxTextSize = 20
 
-hop.Name = "hop"
-hop.Parent = Frame
-hop.BackgroundColor3 = Color3.fromRGB(225, 250, 250)
-hop.BorderColor3 = Color3.fromRGB(0, 0, 0)
-hop.BorderSizePixel = 0
-hop.Position = UDim2.new(0.541818202, 0, 0.393567562, 0)
-hop.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
-hop.Font = Enum.Font.DenkOne
-hop.Text = "Server Hop"
-hop.TextColor3 = Color3.fromRGB(0, 0, 0)
-hop.TextScaled = true
-hop.TextSize = 30.000
-hop.TextWrapped = true
+UIAspectRatioConstraint_2.Parent = Toggle
+UIAspectRatioConstraint_2.AspectRatio = 2.778
 
-UICorner_4.Parent = hop
+UIAspectRatioConstraint_3.Parent = Frame
+UIAspectRatioConstraint_3.AspectRatio = 7.111
 
-UITextSizeConstraint_3.Parent = hop
-UITextSizeConstraint_3.MaxTextSize = 15
-
-UIAspectRatioConstraint_4.Parent = hop
-UIAspectRatioConstraint_4.AspectRatio = 3.365
-
-Time.Name = "Time"
-Time.Parent = Frame
-Time.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
-Time.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Time.BorderSizePixel = 0
-Time.Position = UDim2.new(0.076363638, 0, 0.671618462, 0)
-Time.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
-Time.Font = Enum.Font.DenkOne
-Time.Text = "Time Run:"
-Time.TextColor3 = Color3.fromRGB(0, 0, 0)
-Time.TextScaled = true
-Time.TextSize = 30.000
-Time.TextWrapped = true
-Time.TextXAlignment = Enum.TextXAlignment.Left
-
-UICorner_5.Parent = Time
-
-UITextSizeConstraint_4.Parent = Time
-UITextSizeConstraint_4.MaxTextSize = 15
-
-UIAspectRatioConstraint_5.Parent = Time
-UIAspectRatioConstraint_5.AspectRatio = 3.365
-
-Credit.Name = "Credit"
-Credit.Parent = Frame
-Credit.BackgroundColor3 = Color3.fromRGB(47, 212, 212)
-Credit.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Credit.BorderSizePixel = 0
-Credit.Position = UDim2.new(0.541818202, 0, 0.671618462, 0)
-Credit.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
-Credit.Font = Enum.Font.DenkOne
-Credit.Text = "Made By Capy167"
-Credit.TextColor3 = Color3.fromRGB(0, 0, 0)
-Credit.TextScaled = true
-Credit.TextSize = 30.000
-Credit.TextWrapped = true
-
-UICorner_6.Parent = Credit
-
-UITextSizeConstraint_5.Parent = Credit
-UITextSizeConstraint_5.MaxTextSize = 15
-
-UIAspectRatioConstraint_6.Parent = Credit
-UIAspectRatioConstraint_6.AspectRatio = 3.365
-
-Beli.Name = "Beli"
-Beli.Parent = Frame
-Beli.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
-Beli.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Beli.BorderSizePixel = 0
-Beli.Position = UDim2.new(0.076363638, 0, 0.393567562, 0)
-Beli.Size = UDim2.new(0.385454535, 0, 0.180000007, 0)
-Beli.Font = Enum.Font.DenkOne
-Beli.Text = "Beli Earned:"
-Beli.TextColor3 = Color3.fromRGB(0, 0, 0)
-Beli.TextSize = 30.000
-Beli.TextWrapped = true
-Beli.TextXAlignment = Enum.TextXAlignment.Left
-
-UICorner_7.Parent = Beli
-
-UITextSizeConstraint_6.Parent = Beli
-UITextSizeConstraint_6.MaxTextSize = 15
-
-UIAspectRatioConstraint_7.Parent = Beli
-UIAspectRatioConstraint_7.AspectRatio = 3.365
-
-ImageButton.Parent = Autochest
+ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.0660287067, 0, 0.27888447, 0)
-ImageButton.Size = UDim2.new(0.0650717691, 0, 0.135458171, 0)
+ImageButton.Position = UDim2.new(0.0411483273, 0, 0.308764935, 0)
+ImageButton.Size = UDim2.new(0, 49, 0, 53)
 ImageButton.Image = "rbxassetid://73735368929204"
 
-UICorner_8.Parent = ImageButton
+UICorner_4.CornerRadius = UDim.new(0.100000001, 0)
+UICorner_4.Parent = ImageButton
 
-UIAspectRatioConstraint_8.Parent = ImageButton
+UIAspectRatioConstraint_4.Parent = ImageButton
+
+Hop.Name = "Hop"
+Hop.Parent = ScreenGui
+Hop.BackgroundColor3 = Color3.fromRGB(144, 185, 47)
+Hop.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Hop.BorderSizePixel = 0
+Hop.Position = UDim2.new(0.606698573, 0, 0.143582955, 0)
+Hop.Size = UDim2.new(0.191387564, 0, 0.145418316, 0)
+Hop.Font = Enum.Font.SourceSans
+Hop.Text = "Server Hop"
+Hop.TextColor3 = Color3.fromRGB(0, 0, 0)
+Hop.TextScaled = true
+Hop.TextSize = 30.000
+Hop.TextWrapped = true
+
+UICorner_5.Parent = Hop
+
+UITextSizeConstraint_3.Parent = Hop
+UITextSizeConstraint_3.MaxTextSize = 20
+
+UIAspectRatioConstraint_5.Parent = Hop
+UIAspectRatioConstraint_5.AspectRatio = 2.817
 
 -- Scripts:
 
-local function KEGDLJ_fake_script() -- Frame.LocalScript 
-	local script = Instance.new('LocalScript', Frame)
-
-	local UIGradient = script.Parent.UIStroke.UIGradient
-	local runService = game:GetService("RunService")
-	
-	runService.RenderStepped:Connect(function()
-		UIGradient.Rotation += 2
-	end)
-end
-coroutine.wrap(KEGDLJ_fake_script)()
-local function ZCSZJ_fake_script() -- ImageButton.LocalScript 
+local function UCUZHJ_fake_script() -- ImageButton.LocalScript 
 	local script = Instance.new('LocalScript', ImageButton)
 
 	script.Parent.Active = true
 	script.Parent.Draggable = true
+	
 end
-coroutine.wrap(ZCSZJ_fake_script)()
-local function LNJCICK_fake_script() -- ImageButton.LocalScript 
+coroutine.wrap(UCUZHJ_fake_script)()
+local function HNDUBP_fake_script() -- ImageButton.LocalScript 
 	local script = Instance.new('LocalScript', ImageButton)
 
 	local ImageButton = script.Parent
@@ -239,4 +145,162 @@ local function LNJCICK_fake_script() -- ImageButton.LocalScript
 		end)
 	end
 end
-coroutine.wrap(LNJCICK_fake_script)()
+coroutine.wrap(HNDUBP_fake_script)()
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+
+local LocalPlayer = Players.LocalPlayer
+local MaxSpeed = 250 -- Tốc độ di chuyển
+local CollectInterval = 3 -- Lụm ruong mỗi 3 giây
+local PartName = "FollowPart" -- Tên part
+local AutoChest = true -- Trạng thái mặc định
+
+local Frame = script.Parent.Frame
+local ChestLabel = Frame:FindFirstChild("Chest")
+local ToggleLabel = Frame:FindFirstChild("Toggle")
+local HopButton = script.Parent:FindFirstChild("Hop")
+
+-- **Hàm lấy nhân vật**
+local function getCharacter()
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+    end
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
+
+-- **Tạo/Xóa Part dưới chân**
+local function manageFollowPart(state)
+    local Character = getCharacter()
+    local RootPart = Character:FindFirstChild("HumanoidRootPart")
+    
+    if state then
+        -- Xóa Part cũ nếu có
+        local OldPart = workspace:FindFirstChild(PartName)
+        if OldPart then OldPart:Destroy() end
+        
+        -- **Tạo Part mới**
+        local FollowPart = Instance.new("Part")
+        FollowPart.Name = PartName
+        FollowPart.Size = Vector3.new(10, 1, 10)
+        FollowPart.Transparency = 0.8
+        FollowPart.Anchored = true
+        FollowPart.CanCollide = true
+        FollowPart.Parent = workspace
+
+        -- **Cập nhật vị trí**
+        RunService.Heartbeat:Connect(function()
+            if FollowPart and RootPart then
+                FollowPart.Position = RootPart.Position - Vector3.new(0, 6, 0)
+            end
+        end)
+    else
+        local FollowPart = workspace:FindFirstChild(PartName)
+        if FollowPart then FollowPart:Destroy() end
+    end
+end
+
+-- **Lấy số rương trong server**
+local function countChests()
+    local ChestCount = 0
+    for _, Chest in pairs(workspace:GetDescendants()) do
+        if Chest:IsA("Part") and Chest.Name:find("Chest") and Chest:FindFirstChild("TouchInterest") then
+            ChestCount = ChestCount + 1
+        end
+    end
+    return ChestCount
+end
+
+-- **Cập nhật số rương trên UI**
+local function updateChestCount()
+    while true do
+        local Count = countChests()
+        ChestLabel.Text = "Chest Left: " .. Count
+        task.wait(1)
+    end
+end
+
+-- **Lấy rương gần nhất**
+local function getClosestChest()
+    local RootPart = getCharacter().HumanoidRootPart
+    local ClosestChest = nil
+    local ClosestDistance = math.huge
+
+    for _, Chest in pairs(workspace:GetDescendants()) do
+        if Chest:IsA("Part") and Chest.Name:find("Chest") and Chest:FindFirstChild("TouchInterest") then
+            local Distance = (RootPart.Position - Chest.Position).Magnitude
+            if Distance < ClosestDistance then
+                ClosestDistance = Distance
+                ClosestChest = Chest
+            end
+        end
+    end
+    return ClosestChest
+end
+
+-- **Tween đến rương**
+local function TweenToChest(Chest)
+    if not Chest then return end
+    local RootPart = getCharacter().HumanoidRootPart
+
+    local Distance = (RootPart.Position - Chest.Position).Magnitude
+    local TravelTime = Distance / MaxSpeed -- Giữ tốc độ ổn định
+
+    local TweenInfo = TweenInfo.new(TravelTime, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+    local Goal = {CFrame = Chest.CFrame * CFrame.new(0, 3, 0)}
+
+    local Tween = TweenService:Create(RootPart, TweenInfo, Goal)
+    Tween:Play()
+    Tween.Completed:Wait()
+end
+
+-- **Auto lụm rương**
+local function AutoCollect()
+    while AutoChest do
+        local Chest = getClosestChest()
+        if Chest then
+            TweenToChest(Chest)
+            task.wait(CollectInterval) -- Đợi đúng 3 giây
+        else
+            break
+        end
+    end
+end
+
+-- **Bật/Tắt Auto Chest**
+ToggleLabel.MouseButton1Click:Connect(function()
+    AutoChest = not AutoChest
+    ToggleLabel.Text = "Status: " .. (AutoChest and "On" or "Off")
+
+    if AutoChest then
+        manageFollowPart(true)
+        AutoCollect()
+    else
+        manageFollowPart(false)
+    end
+end)
+
+-- **Server Hop**
+local function ServerHop()
+    local Api = "https://games.roblox.com/v1/games/"
+    local PlaceId = game.PlaceId
+    local Servers = HttpService:JSONDecode(game:HttpGet(Api .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
+
+    for _, Server in pairs(Servers.data) do
+        if Server.id ~= game.JobId then
+            TeleportService:TeleportToPlaceInstance(PlaceId, Server.id, LocalPlayer)
+            return
+        end
+    end
+end
+
+HopButton.MouseButton1Click:Connect(ServerHop)
+
+-- **Khởi động**
+updateChestCount() -- Chạy cập nhật số rương
+manageFollowPart(true) -- Bật Part ban đầu
+AutoCollect() -- Chạy Auto Chest
